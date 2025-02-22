@@ -5,11 +5,11 @@ from typing import Annotated, Any, Literal
 from pydantic import (
     AnyUrl,
     BeforeValidator,
+    EmailStr,
     HttpUrl,
     PostgresDsn,
     computed_field,
     model_validator,
-    EmailStr,
 )
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -49,7 +49,7 @@ class Settings(BaseSettings):
             self.FRONTEND_HOST
         ]
 
-    PROJECT_NAME: str = "PatternLand"
+    PROJECT_NAME: str
     SENTRY_DSN: HttpUrl | None = None
     PROMETHEUS_METRICS: bool = False
     POSTGRES_SERVER: str

@@ -1,3 +1,4 @@
+from collections.abc import Generator
 from typing import Annotated
 
 import jwt
@@ -9,12 +10,18 @@ from sqlmodel import Session
 
 from app.core import security
 from app.core.config import settings
-from app.core.database import get_session
+from app.core.database import engine
 from app.models import TokenPayload, User
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
 )
+
+
+def get_session() -> Generator[Session, None, None]:
+    # https://sqlmodel.tiangolo.com/tutorial/fastapi/session-with-dependency/
+    with Session(engine) as session:
+        yield session
 
 
 SessionDep = Annotated[Session, Depends(get_session)]
