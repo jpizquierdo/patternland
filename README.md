@@ -2,13 +2,8 @@
 Generating a long, random secret key is crucial for security when using algorithms like HS256 in JWT. A strong key makes it difficult for attackers to guess or brute-force your secret.
 
 Here's how you can generate a secure, random secret key:
-```python
-import secrets
-
-# Generate a random 256-bit secret key (32 bytes)
-secret_key = secrets.token_urlsafe(32)
-print(secret_key)
-
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
 ## Acknowledgments
