@@ -1,6 +1,6 @@
-from sqlmodel import create_engine, Session, select
 from alembic import command
 from alembic.config import Config
+from sqlmodel import Session, create_engine, select
 
 from app import crud
 from app.core.config import settings
@@ -17,6 +17,7 @@ def create_db_and_tables(session: Session) -> None:
     alembic_cfg = Config("./alembic.ini")
     command.upgrade(alembic_cfg, "head")
 
+    # init database with superuser
     user = session.exec(
         select(User).where(User.email == settings.FIRST_SUPERUSER)
     ).first()
@@ -25,5 +26,6 @@ def create_db_and_tables(session: Session) -> None:
             email=settings.FIRST_SUPERUSER,
             password=settings.FIRST_SUPERUSER_PASSWORD,
             is_superuser=True,
+            is_active=True,
         )
         user = crud.create_user(session=session, user_create=user_in)
