@@ -38,9 +38,9 @@ class Settings(BaseSettings):
     FRONTEND_HOST: str = "http://localhost:5173"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
 
-    BACKEND_CORS_ORIGINS: Annotated[list[AnyUrl] | str, BeforeValidator(parse_cors)] = (
-        []
-    )
+    BACKEND_CORS_ORIGINS: Annotated[
+        list[AnyUrl] | str, BeforeValidator(parse_cors)
+    ] = []
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -50,8 +50,12 @@ class Settings(BaseSettings):
         ]
 
     PROJECT_NAME: str
+
+    # Configuration for Observability
     SENTRY_DSN: HttpUrl | None = None
     PROMETHEUS_METRICS: bool = False
+
+    # Configuration for PostgreSQL
     POSTGRES_SERVER: str
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str
@@ -70,6 +74,26 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )
 
+    # Configuration for either MinIO or AWS S3
+    S3_ACCESS_KEY: str
+    S3_SECRET_KEY: str
+    S3_ENDPOINT: HttpUrl = "http://localhost:9000"
+    S3_REGION: str = "us-east-1"
+    S3_BUCKET: str = "patternland"
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def S3_CONFIG(self) -> dict[str, str]:
+        return {
+            "aws_access_key_id": self.S3_ACCESS_KEY,
+            "aws_secret_access_key": self.S3_SECRET_KEY,
+            "endpoint_url": str(
+                self.S3_ENDPOINT
+            ),  # use http://localhost:9000 for MinIO or "https://s3.amazonaws.com" for AWS S3
+            "region_name": self.S3_REGION,  # "us-east-1" or your preferred AWS region
+        }
+
+    # Configuration for sending emails
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
     SMTP_PORT: int = 587

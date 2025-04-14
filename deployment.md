@@ -298,6 +298,8 @@ Backend API base URL: `https://api.fastapi-project.example.com`
 
 Adminer: `https://adminer.fastapi-project.example.com`
 
+Minio: `https://minio.fastapi-project.example.com`
+
 ### Staging
 
 Frontend: `https://dashboard.staging.fastapi-project.example.com`
@@ -307,3 +309,5 @@ Backend API docs: `https://api.staging.fastapi-project.example.com/docs`
 Backend API base URL: `https://api.staging.fastapi-project.example.com`
 
 Adminer: `https://adminer.staging.fastapi-project.example.com`
+
+Minio: `https://minio.staging.fastapi-project.example.com`

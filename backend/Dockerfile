@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.12-slim
 
 # This ensures that Python output is sent straight to the terminal (without buffering), which is useful for logging.
 ENV PYTHONUNBUFFERED=1
