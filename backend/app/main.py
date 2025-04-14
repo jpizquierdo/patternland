@@ -12,7 +12,6 @@ from app.core.lifespan import lifespan
 
 def custom_generate_unique_id(route: APIRoute) -> str:
     """Generate a unique id for the route for a better OpenAPI.json generation."""
-    print(route)
     return f"{route.tags[0]}-{route.name}"
 
 

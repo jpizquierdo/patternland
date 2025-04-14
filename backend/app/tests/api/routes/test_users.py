@@ -78,7 +78,7 @@ def test_get_existing_user(
 def test_get_existing_user_current_user(client: TestClient, db: Session) -> None:
     username = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=username, password=password)
+    user_in = UserCreate(email=username, password=password, is_active=True)
     user = crud.create_user(session=db, user_create=user_in)
     user_id = user.id
 
@@ -385,7 +385,7 @@ def test_update_user_email_exists(
 def test_delete_user_me(client: TestClient, db: Session) -> None:
     username = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=username, password=password)
+    user_in = UserCreate(email=username, password=password, is_active=True)
     user = crud.create_user(session=db, user_create=user_in)
     user_id = user.id
 
