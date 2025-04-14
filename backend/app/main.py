@@ -42,12 +42,12 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 # Enable /metrics endpoint for Prometheus
 if settings.PROMETHEUS_METRICS:
     if settings.ENVIRONMENT == "local":
-        prometheis_in_schema = True
+        prometheus_in_schema = True
     else:
-        prometheis_in_schema = False
+        prometheus_in_schema = False
     Instrumentator().instrument(app, metric_namespace="patternland").expose(
         app,
-        include_in_schema=prometheis_in_schema,
+        include_in_schema=prometheus_in_schema,
         dependencies=[Depends(get_current_active_superuser)],
         tags=["metrics"],
     )
