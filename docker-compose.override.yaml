@@ -90,6 +90,7 @@ services:
       SMTP_PORT: "1025"
       SMTP_TLS: "false"
       EMAILS_FROM_EMAIL: "noreply@example.com"
+      S3_ENDPOINT: "http://minio:9000"
 
   mailcatcher:
     image: schickling/mailcatcher
