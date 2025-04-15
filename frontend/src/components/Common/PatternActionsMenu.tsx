@@ -6,6 +6,7 @@ import type { PatternPublic } from "@/client"
 import DeletePattern from "../Patterns/DeletePattern"
 import EditPattern from "../Patterns/EditPattern"
 import AddFiles from "../Patterns/AddFiles"
+import PatternFilesView from "../Patterns/PatternFilesView"
 
 interface PatternActionsMenuProps {
   pattern: PatternPublic
@@ -21,6 +22,7 @@ export const PatternActionsMenu = ({ pattern }: PatternActionsMenuProps) => {
       </MenuTrigger>
       <MenuContent>
         <AddFiles id={pattern.id} />
+        <PatternFilesView pattern={pattern} />
         <EditPattern pattern={pattern} />
         <DeletePattern id={pattern.id} />
       </MenuContent>
