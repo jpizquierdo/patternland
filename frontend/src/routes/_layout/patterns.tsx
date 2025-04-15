@@ -24,7 +24,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination.tsx"
-import placeholderImage from "@/assets/images/placeholder.webp";
+import placeholderImage from "/assets/images/favicon.webp";
 
 const patternsSearchSchema = z.object({
   page: z.number().catch(1),
