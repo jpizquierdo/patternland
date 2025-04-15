@@ -5,6 +5,7 @@ import {
   Input,
   Text,
   VStack,
+  HStack,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -31,8 +32,16 @@ interface EditPatternProps {
 }
 
 interface PatternUpdateForm {
-  title: string
+  title?: string
   description?: string
+  brand?: string
+  version?: string
+  pattern_url?: string
+  for_who?: string
+  category?: string
+  difficulty?: number
+  fabric?: string
+  fabric_amount?: number
 }
 
 const EditPattern = ({ pattern }: EditPatternProps) => {
@@ -70,8 +79,22 @@ const EditPattern = ({ pattern }: EditPatternProps) => {
   })
 
   const onSubmit: SubmitHandler<PatternUpdateForm> = async (data) => {
-    mutation.mutate(data)
+    const processedData = {
+      ...data,
+      category: data.category === "" ? null : data.category, // Convert empty string to null
+      description: data.description === "" ? null : data.description, // Convert empty string to null
+      pattern_url: data.pattern_url === "" ? null : data.pattern_url, // Convert empty string to null
+      fabric: data.fabric === "" ? null : data.fabric, // Convert empty string to null
+      fabric_amount: data.fabric_amount === "" ? null : data.fabric_amount, // Convert empty string to null
+    };
+    mutation.mutate(processedData);
   }
+
+  const brandOptions: PatternPublic["brand"][] = ["Fibre Mood", "Other", "Seamwork"]
+  const versionOptions: PatternPublic["version"][] = ["Paper", "Digital"]
+  const categoryOptions: PatternPublic["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers"]
+  const forWhoOptions: PatternPublic["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets"]
+  const difficultyOptions: PatternPublic["difficulty"][] = [1, 2, 3, 4, 5]
 
   return (
     <DialogRoot
@@ -103,7 +126,7 @@ const EditPattern = ({ pattern }: EditPatternProps) => {
                 <Input
                   id="title"
                   {...register("title", {
-                    required: "Title is required",
+                    required: "Title is required.",
                   })}
                   placeholder="Title"
                   type="text"
@@ -120,6 +143,152 @@ const EditPattern = ({ pattern }: EditPatternProps) => {
                   {...register("description")}
                   placeholder="Description"
                   type="text"
+                />
+              </Field>
+              <HStack gap={2}>
+                <Field
+                  required
+                  invalid={!!errors.version}
+                  errorText={errors.version?.message}
+                  label="Version"
+                >
+                  <select
+                    id="version"
+                    {...register("version")}
+                    placeholder="Select a version"
+                  >
+                    <option value="" disabled>
+                      Select a version
+                    </option>
+                    {versionOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field
+                  required
+                  invalid={!!errors.brand}
+                  errorText={errors.brand?.message}
+                  label="Brand"
+                >
+                  <select
+                    id="brand"
+                    {...register("brand")}
+                    placeholder="Select a brand"
+                  >
+                    <option value="" disabled>
+                      Select a brand
+                    </option>
+                    {brandOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field
+                  //required
+                  invalid={!!errors.category}
+                  errorText={errors.category?.message}
+                  label="Category"
+                >
+                  <select
+                    id="category"
+                    {...register("category")}
+                    placeholder="Select a category"
+                  >
+                    <option value="">
+                      Other
+                    </option>
+                    {categoryOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field
+                  required
+                  invalid={!!errors.for_who}
+                  errorText={errors.for_who?.message}
+                  label="For Who"
+                >
+                  <select
+                    id="for_who"
+                    {...register("for_who")}
+                    placeholder="For Who"
+                  >
+                    <option value="" disabled>
+                      For Who
+                    </option>
+                    {forWhoOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+
+              </HStack>
+              <HStack gap={2}>
+                <Field
+                  required
+                  invalid={!!errors.difficulty}
+                  errorText={errors.difficulty?.message}
+                  label="Difficulty"
+                >
+                  <select
+                    id="difficulty"
+                    {...register("difficulty")}
+                    placeholder="Select a difficulty"
+                  >
+                    <option value="" disabled>
+                      Select a difficulty
+                    </option>
+                    {difficultyOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field
+                  invalid={!!errors.fabric}
+                  errorText={errors.fabric?.message}
+                  label="Fabric"
+                >
+                  <Input
+                    id="fabric"
+                    {...register("fabric")}
+                    placeholder="fabric"
+                    type="text"
+                  />
+                </Field>
+                <Field
+                  invalid={!!errors.fabric_amount}
+                  errorText={errors.fabric_amount?.message}
+                  label="Fabric Amount [m]"
+                >
+                  <Input
+                    id="fabric_amount"
+                    {...register("fabric_amount")}
+                    placeholder="fabric_amount"
+                    type="number"
+                  />
+                </Field>
+              </HStack>
+              <Field
+                invalid={!!errors.pattern_url}
+                errorText={errors.pattern_url?.message}
+                label="Pattern URL"
+              >
+                <Input
+                  id="pattern_url"
+                  {...register("pattern_url")}
+                  placeholder="pattern_url"
+                  type="url"
                 />
               </Field>
             </VStack>
