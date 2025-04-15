@@ -184,6 +184,8 @@ Automatic Alternative Docs (ReDoc): http://localhost:8000/redoc
 
 Adminer: http://localhost:8080
 
+Minio: http://localhost:9000
+
 Traefik UI: http://localhost:8090
 
 MailCatcher: http://localhost:1080
@@ -201,6 +203,8 @@ Automatic Interactive Docs (Swagger UI): http://api.localhost.patternland.com/do
 Automatic Alternative Docs (ReDoc): http://api.localhost.patternland.com/redoc
 
 Adminer: http://localhost.patternland.com:8080
+
+Minio: http://localhost.patternland.com:9000
 
 Traefik UI: http://localhost.patternland.com:8090
 

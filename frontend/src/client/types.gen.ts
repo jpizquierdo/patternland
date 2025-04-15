@@ -9,6 +9,17 @@ export type Body_login_login_access_token = {
   client_secret?: string | null
 }
 
+export type Body_patterns_upload_files = {
+  id: string
+  pattern_a0_file?: (Blob | File) | null
+  pattern_a0_sa_file?: (Blob | File) | null
+  pattern_a0_sa_projector_file?: (Blob | File) | null
+  pattern_a0_projector_file?: (Blob | File) | null
+  pattern_a4_file?: (Blob | File) | null
+  pattern_a4_sa_file?: (Blob | File) | null
+  pattern_instructables_file?: (Blob | File) | null
+}
+
 export type HTTPValidationError = {
   detail?: Array<ValidationError>
 }
@@ -42,6 +53,144 @@ export type Message = {
 export type NewPassword = {
   token: string
   new_password: string
+}
+
+export type PatternCreate = {
+  title: string
+  description?: string | null
+  brand: "Fibre Mood" | "Other" | "Seamwork"
+  version: "Paper" | "Digital"
+  pattern_url?: string | null
+  for_who: "Baby" | "Kids" | "Men" | "Women" | "Pets"
+  category?:
+    | "Accessories"
+    | "Bags"
+    | "Blazers"
+    | "Bodywarmer"
+    | "Cardigans"
+    | "Coats"
+    | "DIY"
+    | "Dresses"
+    | "Hoodie"
+    | "Jackets"
+    | "Jumpers"
+    | "Jumpsuits"
+    | "Overalls"
+    | "Overshirt"
+    | "Pullovers"
+    | "Shirts"
+    | "Shorts"
+    | "Skirts"
+    | "Sweaters"
+    | "Swimwear"
+    | "T-shirts"
+    | "Tops"
+    | "Trousers"
+    | null
+  difficulty: number
+  fabric?: string | null
+  fabric_amount?: number | null
+}
+
+export type brand = "Fibre Mood" | "Other" | "Seamwork"
+
+export type version = "Paper" | "Digital"
+
+export type for_who = "Baby" | "Kids" | "Men" | "Women" | "Pets"
+
+export type PatternPublic = {
+  title: string
+  description?: string | null
+  brand: "Fibre Mood" | "Other" | "Seamwork"
+  version: "Paper" | "Digital"
+  pattern_url?: string | null
+  for_who: "Baby" | "Kids" | "Men" | "Women" | "Pets"
+  category?:
+    | "Accessories"
+    | "Bags"
+    | "Blazers"
+    | "Bodywarmer"
+    | "Cardigans"
+    | "Coats"
+    | "DIY"
+    | "Dresses"
+    | "Hoodie"
+    | "Jackets"
+    | "Jumpers"
+    | "Jumpsuits"
+    | "Overalls"
+    | "Overshirt"
+    | "Pullovers"
+    | "Shirts"
+    | "Shorts"
+    | "Skirts"
+    | "Sweaters"
+    | "Swimwear"
+    | "T-shirts"
+    | "Tops"
+    | "Trousers"
+    | null
+  difficulty: number
+  fabric?: string | null
+  fabric_amount?: number | null
+  id: string
+  owner_id: string
+  pattern_a0_file_id: string | null
+  pattern_a0_sa_file_id: string | null
+  pattern_a0_sa_projector_file_id: string | null
+  pattern_a0_projector_file_id: string | null
+  pattern_a4_file_id: string | null
+  pattern_a4_sa_file_id: string | null
+  pattern_instructables_file_id: string | null
+}
+
+export type PatternsPublic = {
+  data: Array<PatternPublic>
+  count: number
+}
+
+export type PatternUpdate = {
+  title?: string | null
+  description?: string | null
+  brand?: "Fibre Mood" | "Other" | "Seamwork" | null
+  version?: "Paper" | "Digital" | null
+  pattern_url?: string | null
+  for_who?: "Baby" | "Kids" | "Men" | "Women" | "Pets" | null
+  category?:
+    | "Accessories"
+    | "Bags"
+    | "Blazers"
+    | "Bodywarmer"
+    | "Cardigans"
+    | "Coats"
+    | "DIY"
+    | "Dresses"
+    | "Hoodie"
+    | "Jackets"
+    | "Jumpers"
+    | "Jumpsuits"
+    | "Overalls"
+    | "Overshirt"
+    | "Pullovers"
+    | "Shirts"
+    | "Shorts"
+    | "Skirts"
+    | "Sweaters"
+    | "Swimwear"
+    | "T-shirts"
+    | "Tops"
+    | "Trousers"
+    | null
+  difficulty?: number | null
+  fabric?: string | null
+  fabric_amount?: number | null
+}
+
+export type PrivateUserCreate = {
+  email: string
+  password: string
+  full_name: string
+  is_verified?: boolean
 }
 
 export type Token = {
@@ -157,6 +306,57 @@ export type LoginRecoverPasswordHtmlContentData = {
 }
 
 export type LoginRecoverPasswordHtmlContentResponse = string
+
+export type PatternsUploadFilesData = {
+  formData: Body_patterns_upload_files
+}
+
+export type PatternsUploadFilesResponse = unknown
+
+export type PatternsDownloadFileData = {
+  filename: string
+}
+
+export type PatternsDownloadFileResponse = unknown
+
+export type PatternsReadPatternsData = {
+  limit?: number
+  selfPatterns?: boolean
+  skip?: number
+}
+
+export type PatternsReadPatternsResponse = PatternsPublic
+
+export type PatternsCreatePatternData = {
+  requestBody: PatternCreate
+}
+
+export type PatternsCreatePatternResponse = PatternPublic
+
+export type PatternsReadPatternData = {
+  id: string
+}
+
+export type PatternsReadPatternResponse = PatternPublic
+
+export type PatternsUpdatePatternData = {
+  id: string
+  requestBody: PatternUpdate
+}
+
+export type PatternsUpdatePatternResponse = PatternPublic
+
+export type PatternsDeletePatternData = {
+  id: string
+}
+
+export type PatternsDeletePatternResponse = Message
+
+export type PrivateCreateUserData = {
+  requestBody: PrivateUserCreate
+}
+
+export type PrivateCreateUserResponse = UserPublic
 
 export type UsersReadUsersData = {
   limit?: number

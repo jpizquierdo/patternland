@@ -23,6 +23,22 @@ import type {
   LoginResetPasswordResponse,
   LoginRecoverPasswordHtmlContentData,
   LoginRecoverPasswordHtmlContentResponse,
+  PatternsUploadFilesData,
+  PatternsUploadFilesResponse,
+  PatternsDownloadFileData,
+  PatternsDownloadFileResponse,
+  PatternsReadPatternsData,
+  PatternsReadPatternsResponse,
+  PatternsCreatePatternData,
+  PatternsCreatePatternResponse,
+  PatternsReadPatternData,
+  PatternsReadPatternResponse,
+  PatternsUpdatePatternData,
+  PatternsUpdatePatternResponse,
+  PatternsDeletePatternData,
+  PatternsDeletePatternResponse,
+  PrivateCreateUserData,
+  PrivateCreateUserResponse,
   UsersReadUsersData,
   UsersReadUsersResponse,
   UsersCreateUserData,
@@ -265,6 +281,198 @@ export class LoginService {
       path: {
         email: data.email,
       },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class PatternsService {
+  /**
+   * Upload Files
+   * Upload files to a pattern.
+   * @param data The data for the request.
+   * @param data.formData
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static uploadFiles(
+    data: PatternsUploadFilesData,
+  ): CancelablePromise<PatternsUploadFilesResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/patterns/upload/",
+      formData: data.formData,
+      mediaType: "multipart/form-data",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Download File
+   * Download a file from MinIO.
+   * @param data The data for the request.
+   * @param data.filename
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static downloadFile(
+    data: PatternsDownloadFileData,
+  ): CancelablePromise<PatternsDownloadFileResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/patterns/download/{filename}",
+      path: {
+        filename: data.filename,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Patterns
+   * Retrieve patterns.
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @param data.selfPatterns
+   * @returns PatternsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readPatterns(
+    data: PatternsReadPatternsData = {},
+  ): CancelablePromise<PatternsReadPatternsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/patterns/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+        self_patterns: data.selfPatterns,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Create Pattern
+   * Create new pattern.
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns PatternPublic Successful Response
+   * @throws ApiError
+   */
+  public static createPattern(
+    data: PatternsCreatePatternData,
+  ): CancelablePromise<PatternsCreatePatternResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/patterns/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Pattern
+   * Get pattern by ID.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns PatternPublic Successful Response
+   * @throws ApiError
+   */
+  public static readPattern(
+    data: PatternsReadPatternData,
+  ): CancelablePromise<PatternsReadPatternResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/patterns/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Pattern
+   * Update an pattern.
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns PatternPublic Successful Response
+   * @throws ApiError
+   */
+  public static updatePattern(
+    data: PatternsUpdatePatternData,
+  ): CancelablePromise<PatternsUpdatePatternResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/patterns/{id}",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Pattern
+   * Delete a pattern and its associated files in MinIO.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deletePattern(
+    data: PatternsDeletePatternData,
+  ): CancelablePromise<PatternsDeletePatternResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/patterns/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class PrivateService {
+  /**
+   * Create User
+   * Create a new user.
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns UserPublic Successful Response
+   * @throws ApiError
+   */
+  public static createUser(
+    data: PrivateCreateUserData,
+  ): CancelablePromise<PrivateCreateUserResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/private/users/",
+      body: data.requestBody,
+      mediaType: "application/json",
       errors: {
         422: "Validation Error",
       },
