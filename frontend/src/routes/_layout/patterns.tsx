@@ -5,12 +5,14 @@ import {
   Heading,
   Table,
   VStack,
+  Button,
+  Image,
 } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { FiSearch } from "react-icons/fi"
 import { z } from "zod"
-
+import { FaExternalLinkAlt } from "react-icons/fa";
 import { PatternsService } from "@/client"
 import { PatternActionsMenu } from "@/components/Common/PatternActionsMenu"
 //import AddPattern from "@/components/Patterns/AddPattern"
@@ -22,6 +24,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination.tsx"
+import placeholderImage from "@/assets/images/placeholder.webp";
 
 const patternsSearchSchema = z.object({
   page: z.number().catch(1),
@@ -86,9 +89,17 @@ function PatternsTable() {
       <Table.Root size={{ base: "sm", md: "md" }}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="sm">ID</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Icon</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Title</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Description</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Brand</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Category</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">For Who</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Version</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">URL</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Difficulty</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Fabric</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Fabric Amount [m]</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -96,7 +107,13 @@ function PatternsTable() {
           {patterns?.map((pattern) => (
             <Table.Row key={pattern.id} opacity={isPlaceholderData ? 0.5 : 1}>
               <Table.Cell truncate maxW="sm">
-                {pattern.id}
+                <Image
+                  src={pattern.icon || placeholderImage}
+                  alt={pattern.title}
+                  boxSize="90px"
+                  objectFit="scale-down"
+                  borderRadius="sm"
+                ></Image>
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
                 {pattern.title}
@@ -104,9 +121,54 @@ function PatternsTable() {
               <Table.Cell
                 color={!pattern.description ? "gray" : "inherit"}
                 truncate
-                maxW="30%"
+                maxW="sm"
+                whiteSpace="normal" // Allow text to wrap
               >
                 {pattern.description || "N/A"}
+              </Table.Cell>
+              <Table.Cell truncate maxW="sm">
+                {pattern.brand}
+              </Table.Cell>
+              <Table.Cell
+                color={!pattern.description ? "gray" : "inherit"}
+                truncate maxW="sm">
+                {pattern.category || "N/A"}
+              </Table.Cell>
+              <Table.Cell truncate maxW="sm">
+                {pattern.for_who}
+              </Table.Cell>
+              <Table.Cell truncate maxW="sm">
+                {pattern.version}
+              </Table.Cell>
+              <Table.Cell
+                color={!pattern.pattern_url ? "gray" : "inherit"}
+                truncate maxW="sm">
+                {pattern.pattern_url ? (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => window.open(pattern.pattern_url, "_blank")}
+                  >
+                    <FaExternalLinkAlt />
+                  </Button>
+                ) : (
+                  "N/A"
+                )}
+              </Table.Cell>
+              <Table.Cell
+                color={!pattern.difficulty ? "gray" : "inherit"}
+                truncate maxW="sm">
+                {pattern.difficulty || "N/A"}
+              </Table.Cell>
+              <Table.Cell
+                color={!pattern.fabric ? "gray" : "inherit"}
+                truncate maxW="sm">
+                {pattern.fabric || "N/A"}
+              </Table.Cell>
+              <Table.Cell
+                color={!pattern.fabric_amount ? "gray" : "inherit"}
+                truncate maxW="sm">
+                {pattern.fabric_amount || "N/A"}
               </Table.Cell>
               <Table.Cell>
                 <PatternActionsMenu pattern={pattern} />
