@@ -20,9 +20,9 @@ export const PatternActionsMenu = ({ pattern }: PatternActionsMenuProps) => {
         </IconButton>
       </MenuTrigger>
       <MenuContent>
+        <AddFiles id={pattern.id} />
         <EditPattern pattern={pattern} />
         <DeletePattern id={pattern.id} />
-        <AddFiles id={pattern.id} />
       </MenuContent>
     </MenuRoot>
   )

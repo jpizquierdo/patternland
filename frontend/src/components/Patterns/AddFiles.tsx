@@ -1,19 +1,16 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { type SubmitHandler, useForm } from "react-hook-form"
-
 import {
     Button,
     DialogActionTrigger,
-    DialogTitle,
     Input,
     Text,
     VStack,
 } from "@chakra-ui/react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { type SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
 
-import { type Body_patterns_upload_files, PatternsService } from "@/client"
-import type { ApiError } from "@/client/core/ApiError"
+import { type ApiError, type Body_patterns_upload_files, PatternsService } from "@/client"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 import {
@@ -23,6 +20,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogRoot,
+    DialogTitle,
     DialogTrigger,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
@@ -80,7 +78,7 @@ const AddFiles = ({ id }: { id: string }) => {
             onOpenChange={({ open }) => setIsOpen(open)}
         >
             <DialogTrigger asChild>
-                <Button value="add-files" my={4}>
+                <Button variant="ghost" value="add-files">
                     <FaPlus fontSize="16px" />
                     Add Files
                 </Button>

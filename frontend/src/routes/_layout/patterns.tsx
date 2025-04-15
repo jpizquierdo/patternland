@@ -13,7 +13,8 @@ import { z } from "zod"
 
 import { PatternsService } from "@/client"
 import { PatternActionsMenu } from "@/components/Common/PatternActionsMenu"
-import AddPattern from "@/components/Patterns/AddPattern"
+//import AddPattern from "@/components/Patterns/AddPattern"
+import AddPatternAndFiles from "@/components/Patterns/AddPatternAndFiles"
 import PendingPatterns from "@/components/Pending/PendingPatterns"
 import {
   PaginationItems,
@@ -130,14 +131,15 @@ function PatternsTable() {
     </>
   )
 }
-
+//      //<AddPattern />
 function Patterns() {
   return (
     <Container maxW="full">
       <Heading size="lg" pt={12}>
         Patterns Management
       </Heading>
-      <AddPattern />
+
+      <AddPatternAndFiles />
       <PatternsTable />
     </Container>
   )
