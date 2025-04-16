@@ -316,7 +316,7 @@ export class PatternsService {
    * Download a file from MinIO.
    * @param data The data for the request.
    * @param data.filename
-   * @returns unknown Successful Response
+   * @returns binary File download
    * @throws ApiError
    */
   public static downloadFile(

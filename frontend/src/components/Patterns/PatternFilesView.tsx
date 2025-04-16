@@ -15,7 +15,9 @@ import {
     type PatternPublic,
     PatternsService,
     type PatternsDownloadFileData,
+    OpenAPI
 } from "@/client"
+import { getHeaders } from "@/client/core/request"
 import useCustomToast from "@/hooks/useCustomToast"
 import {
     DialogBody,
@@ -56,10 +58,29 @@ const PatternFilesView = ({ pattern }: PatternFilesViewProps) => {
 
     const handleDownload = async (filename: string) => {
         try {
-            const response = await PatternsService.downloadFile({ filename } as PatternsDownloadFileData)
-            const blob = new Blob([response as BlobPart]) // Cast to make TS happy
-            saveAs(blob, filename)
-            showSuccessToast("File downloaded.")
+            // TODO: investigate why this is not working, downloaded file were corrupted using automatic fetch from axios
+            //const response = await PatternsService.downloadFile({ filename } as PatternsDownloadFileData)
+            // //const blob = new Blob([response]) // Cast to make TS happy
+            // const blob = response instanceof Blob ? response : new Blob([response]);
+            // saveAs(blob, filename)
+            // showSuccessToast("File downloaded.")
+
+            const headers = await getHeaders(OpenAPI, {
+                method: "GET",
+                url: "/api/v1/patterns/download/{filename}",
+                path: { filename },
+            })
+            const baseUrl = OpenAPI.BASE
+            const response = await fetch(`${baseUrl}/api/v1/patterns/download/${filename}`, {
+                method: "GET",
+                headers,
+            })
+
+            if (!response.ok) throw new Error("Download failed");
+
+            const blob = await response.blob();
+            saveAs(blob, filename);
+            showSuccessToast("File downloaded.");
         } catch (error) {
             console.error("Download failed", error)
         }

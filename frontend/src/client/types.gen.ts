@@ -317,7 +317,7 @@ export type PatternsDownloadFileData = {
   filename: string
 }
 
-export type PatternsDownloadFileResponse = unknown
+export type PatternsDownloadFileResponse = Blob | File
 
 export type PatternsReadPatternsData = {
   limit?: number
