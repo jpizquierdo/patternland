@@ -32,6 +32,16 @@ async def upload_to_minio(file: UploadFile | None) -> uuid.UUID | None:
     return None
 
 
+# Helper function to delete old MinIO items
+async def delete_minio_item(file_id: str):
+    try:
+        s3_client.delete_object(Bucket=settings.S3_BUCKET, Key=file_id)
+    except s3_client.exceptions.NoSuchKey:
+        print(f"File {file_id} not found in MinIO, skipping deletion.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting file: {e}")
+
+
 @router.post("/upload/")
 async def upload_files(
     *,
@@ -45,6 +55,7 @@ async def upload_files(
     pattern_a4_file: UploadFile | None = File(None),
     pattern_a4_sa_file: UploadFile | None = File(None),
     pattern_instructables_file: UploadFile | None = File(None),
+    icon: UploadFile | None = File(None),
 ):
     """
     Upload files to a pattern.
@@ -52,23 +63,31 @@ async def upload_files(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    # Initialize a dictionary to store file IDs
-    file_ids = {}
 
-    # Upload files to MinIO and store their IDs
-    file_ids["pattern_a0_file_id"] = await upload_to_minio(pattern_a0_file)
-    file_ids["pattern_a0_sa_file_id"] = await upload_to_minio(pattern_a0_sa_file)
-    file_ids["pattern_a0_sa_projector_file_id"] = await upload_to_minio(
-        pattern_a0_sa_projector_file
-    )
-    file_ids["pattern_a0_projector_file_id"] = await upload_to_minio(
-        pattern_a0_projector_file
-    )
-    file_ids["pattern_a4_file_id"] = await upload_to_minio(pattern_a4_file)
-    file_ids["pattern_a4_sa_file_id"] = await upload_to_minio(pattern_a4_sa_file)
-    file_ids["pattern_instructables_file_id"] = await upload_to_minio(
-        pattern_instructables_file
-    )
+    # Upload files to MinIO and store their IDs, excluding None values
+    # Upload files to MinIO and store their IDs, excluding None values
+    file_ids = {}
+    new_files = {
+        "pattern_a0_file_id": pattern_a0_file,
+        "pattern_a0_sa_file_id": pattern_a0_sa_file,
+        "pattern_a0_sa_projector_file_id": pattern_a0_sa_projector_file,
+        "pattern_a0_projector_file_id": pattern_a0_projector_file,
+        "pattern_a4_file_id": pattern_a4_file,
+        "pattern_a4_sa_file_id": pattern_a4_sa_file,
+        "pattern_instructables_file_id": pattern_instructables_file,
+        "icon": icon,
+    }
+
+    for key, new_file in new_files.items():
+        if new_file:
+            # Check if the pattern already has a value for this key
+            old_file_id = getattr(pattern, key, None)
+            if old_file_id:
+                # Call delete_minio_item with the old value
+                await delete_minio_item(old_file_id)
+
+            # Upload the new file and store its ID
+            file_ids[key] = await upload_to_minio(new_file)
     pattern.sqlmodel_update(file_ids)
     session.add(pattern)
     session.commit()
@@ -215,6 +234,7 @@ async def delete_pattern(
         pattern.pattern_a4_file_id,
         pattern.pattern_a4_sa_file_id,
         pattern.pattern_instructables_file_id,
+        pattern.icon,
     ]
 
     # Delete files from MinIO if they exist
