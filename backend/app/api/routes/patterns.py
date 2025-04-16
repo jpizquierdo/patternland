@@ -55,6 +55,7 @@ async def upload_files(
     pattern_a4_file: UploadFile | None = File(None),
     pattern_a4_sa_file: UploadFile | None = File(None),
     pattern_instructables_file: UploadFile | None = File(None),
+    icon: UploadFile | None = File(None),
 ):
     """
     Upload files to a pattern.
@@ -74,6 +75,7 @@ async def upload_files(
         "pattern_a4_file_id": pattern_a4_file,
         "pattern_a4_sa_file_id": pattern_a4_sa_file,
         "pattern_instructables_file_id": pattern_instructables_file,
+        "icon": icon,
     }
 
     for key, new_file in new_files.items():
@@ -232,6 +234,7 @@ async def delete_pattern(
         pattern.pattern_a4_file_id,
         pattern.pattern_a4_sa_file_id,
         pattern.pattern_instructables_file_id,
+        pattern.icon,
     ]
 
     # Delete files from MinIO if they exist

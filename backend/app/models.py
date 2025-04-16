@@ -207,6 +207,7 @@ class Pattern(PatternBase, table=True):
     pattern_a4_file_id: str | None = Field(default=None)
     pattern_a4_sa_file_id: str | None = Field(default=None)
     pattern_instructables_file_id: str | None = Field(default=None)
+    icon: str | None = Field(default=None)
 
 
 # Properties to return via API, id is always required
@@ -220,6 +221,7 @@ class PatternPublic(PatternBase):
     pattern_a4_file_id: str | None
     pattern_a4_sa_file_id: str | None
     pattern_instructables_file_id: str | None
+    icon: str | None = Field(default=None)
 
 
 class PatternsPublic(SQLModel):

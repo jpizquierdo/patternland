@@ -63,6 +63,7 @@ const AddPatternAndFiles = () => {
                 pattern_a4_file: data.pattern_a4_file?.[0] || null,
                 pattern_a4_sa_file: data.pattern_a4_sa_file?.[0] || null,
                 pattern_instructables_file: data.pattern_instructables_file?.[0] || null,
+                icon: data.icon?.[0] || null,
             }
 
             await PatternsService.uploadFiles({ formData: filePayload })
@@ -105,6 +106,7 @@ const AddPatternAndFiles = () => {
         pattern_a4_file?: FileList
         pattern_a4_sa_file?: FileList
         pattern_instructables_file?: FileList
+        icon?: FileList
     }
     return (
         <DialogRoot
@@ -302,6 +304,16 @@ const AddPatternAndFiles = () => {
                                 />
                             </Field>
                             <Text mb={4}>Select files to upload for the pattern.</Text>
+                            <Field
+                                invalid={!!errors.icon}
+                                errorText={errors.icon?.message}
+                                label="Pattern icon"
+                            >
+                                <Input
+                                    type="file"
+                                    {...register("icon")}
+                                />
+                            </Field>
                             <Field
                                 invalid={!!errors.pattern_a0_file}
                                 errorText={errors.pattern_a0_file?.message}

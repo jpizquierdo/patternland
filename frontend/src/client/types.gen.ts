@@ -18,6 +18,7 @@ export type Body_patterns_upload_files = {
   pattern_a4_file?: (Blob | File) | null
   pattern_a4_sa_file?: (Blob | File) | null
   pattern_instructables_file?: (Blob | File) | null
+  icon?: (Blob | File) | null
 }
 
 export type HTTPValidationError = {
@@ -142,6 +143,7 @@ export type PatternPublic = {
   pattern_a4_file_id: string | null
   pattern_a4_sa_file_id: string | null
   pattern_instructables_file_id: string | null
+  icon?: string | null
 }
 
 export type PatternsPublic = {
@@ -317,7 +319,7 @@ export type PatternsDownloadFileData = {
   filename: string
 }
 
-export type PatternsDownloadFileResponse = Blob | File
+export type PatternsDownloadFileResponse = unknown
 
 export type PatternsReadPatternsData = {
   limit?: number

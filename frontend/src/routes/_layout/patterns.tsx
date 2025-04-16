@@ -8,12 +8,14 @@ import {
   Button,
   Image,
 } from "@chakra-ui/react"
+import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { FiSearch } from "react-icons/fi"
 import { z } from "zod"
 import { FaExternalLinkAlt } from "react-icons/fa";
-import { PatternsService } from "@/client"
+import { PatternsService, OpenAPI } from "@/client"
+import { getHeaders } from "@/client/core/request"
 import { PatternActionsMenu } from "@/components/Common/PatternActionsMenu"
 //import AddPattern from "@/components/Patterns/AddPattern"
 import AddPatternAndFiles from "@/components/Patterns/AddPatternAndFiles"
@@ -107,13 +109,7 @@ function PatternsTable() {
           {patterns?.map((pattern) => (
             <Table.Row key={pattern.id} opacity={isPlaceholderData ? 0.5 : 1}>
               <Table.Cell truncate maxW="sm">
-                <Image
-                  src={pattern.icon || placeholderImage}
-                  alt={pattern.title}
-                  boxSize="90px"
-                  objectFit="scale-down"
-                  borderRadius="sm"
-                ></Image>
+                <IconImage filename={pattern.icon} alt={pattern.title} />
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
                 {pattern.title}
@@ -206,3 +202,45 @@ function Patterns() {
     </Container>
   )
 }
+const IconImage = ({ filename, alt }: { filename: string; alt: string }) => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      if (filename) {
+        try {
+          const headers = await getHeaders(OpenAPI, {
+            method: "GET",
+            url: "/api/v1/patterns/download/{filename}",
+            path: { filename },
+          })
+          const baseUrl = OpenAPI.BASE
+          const response = await fetch(`${baseUrl}/api/v1/patterns/download/${filename}`, {
+            method: "GET",
+            headers,
+          })
+
+          if (!response.ok) throw new Error("Download failed");
+
+          const blob = await response.blob();
+          const objectURL = URL.createObjectURL(blob);
+          setImageUrl(objectURL);
+        } catch (error) {
+          console.error('Error loading image:', error);
+        }
+      }
+    };
+
+    fetchImage();
+  }, [filename]);
+
+  return (
+    <Image
+      src={imageUrl || placeholderImage} // fallback to placeholder if image is not loaded
+      alt={alt}
+      boxSize="90px"
+      objectFit="scale-down"
+      borderRadius="sm"
+    />
+  );
+};
