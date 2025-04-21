@@ -5,15 +5,16 @@ import {
   Heading,
   Table,
   VStack,
-  Button,
+  // Button,
   Image,
+  Badge
 } from "@chakra-ui/react"
 import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { FiSearch } from "react-icons/fi"
 import { z } from "zod"
-import { FaExternalLinkAlt } from "react-icons/fa";
+// import { FaExternalLinkAlt } from "react-icons/fa";
 import { PatternsService, OpenAPI } from "@/client"
 import { getHeaders } from "@/client/core/request"
 import { PatternActionsMenu } from "@/components/Common/PatternActionsMenu"
@@ -27,7 +28,8 @@ import {
   PaginationRoot,
 } from "@/components/ui/pagination.tsx"
 import placeholderImage from "/assets/images/favicon.webp";
-
+import { useQueryClient } from "@tanstack/react-query"
+import type { UserPublic } from "@/client"
 const patternsSearchSchema = z.object({
   page: z.number().catch(1),
 })
@@ -48,6 +50,9 @@ export const Route = createFileRoute("/_layout/patterns")({
 })
 
 function PatternsTable() {
+  const queryClient = useQueryClient()
+  // Get the current user from the query cache
+  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
   const navigate = useNavigate({ from: Route.fullPath })
   const { page } = Route.useSearch()
 
@@ -113,6 +118,11 @@ function PatternsTable() {
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
                 {pattern.title}
+                {currentUser?.id === pattern.owner_id && (
+                  <Badge ml="1" colorScheme="teal">
+                    Yours
+                  </Badge>
+                )}
               </Table.Cell>
               {/* <Table.Cell
                 color={!pattern.description ? "gray" : "inherit"}
