@@ -25,7 +25,7 @@ services:
     networks:
       - default
     healthcheck:
-      test: [ "CMD", "mc", "ready", "local" ]
+      test: ["CMD", "curl", "-f", "http://localhost:9002/minio/health/ready"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -118,7 +118,7 @@ services:
     build:
       context: ./frontend
       args:
-        - VITE_API_URL=http://backend:8000
+        - VITE_API_URL=${VITE_API_URL?Variable not set}
         - NODE_ENV=production
     
 volumes:
