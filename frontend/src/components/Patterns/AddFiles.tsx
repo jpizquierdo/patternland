@@ -25,7 +25,7 @@ import {
 } from "../ui/dialog"
 import { Field } from "../ui/field"
 
-const AddFiles = ({ id }: { id: string }) => {
+const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => {
     const [isOpen, setIsOpen] = useState(false)
     const queryClient = useQueryClient()
     const { showSuccessToast } = useCustomToast()
@@ -46,6 +46,7 @@ const AddFiles = ({ id }: { id: string }) => {
             showSuccessToast("Pattern files successfully uploaded.")
             reset()
             setIsOpen(false)
+            closeMenu?.()
         },
         onError: (err: ApiError) => {
             handleError(err)
@@ -55,7 +56,7 @@ const AddFiles = ({ id }: { id: string }) => {
         },
     })
 
-    const onSubmit: SubmitHandler<Body_patterns_upload_files> = (data) => {
+    const onSubmit: SubmitHandler<any> = (data) => {
         const payload: Body_patterns_upload_files = {
             id,
             pattern_a0_file: data.pattern_a0_file?.[0] || null,
@@ -76,7 +77,10 @@ const AddFiles = ({ id }: { id: string }) => {
             size={{ base: "xs", md: "md" }}
             placement="center"
             open={isOpen}
-            onOpenChange={({ open }) => setIsOpen(open)}
+            onOpenChange={({ open }) => {
+                setIsOpen(open);
+                if (!open && closeMenu) closeMenu(); // Close action menu when dialog is closed
+            }}
         >
             <DialogTrigger asChild>
                 <Button variant="ghost" value="add-files">

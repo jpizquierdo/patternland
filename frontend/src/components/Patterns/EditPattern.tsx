@@ -27,24 +27,35 @@ import {
 } from "../ui/dialog"
 import { Field } from "../ui/field"
 
+// Utility type: takes an array and gives you a union of its values
+type ValueOfArray<T extends Readonly<any[]>> = T[number];
+
+
+const brandOptions: PatternPublic["brand"][] = ["Fibre Mood", "Other", "Seamwork"]
+const versionOptions: PatternPublic["version"][] = ["Paper", "Digital"]
+const categoryOptions: PatternPublic["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers", null]
+const forWhoOptions: PatternPublic["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets"]
+const difficultyOptions: PatternPublic["difficulty"][] = [1, 2, 3, 4, 5]
 interface EditPatternProps {
   pattern: PatternPublic
+  closeMenu?: () => void
 }
 
 interface PatternUpdateForm {
   title?: string
-  description?: string
-  brand?: string
-  version?: string
-  pattern_url?: string
-  for_who?: string
-  category?: string
-  difficulty?: number
-  fabric?: string
-  fabric_amount?: number
+  description?: string | null
+  brand?: ValueOfArray<typeof brandOptions> | null;
+  version?: ValueOfArray<typeof versionOptions> | null;
+  pattern_url?: string | null
+  for_who?: ValueOfArray<typeof forWhoOptions> | null;
+  category?: Exclude<ValueOfArray<typeof categoryOptions>, null> | null;//it is like that because categoryoptions has a null inside
+  difficulty?: ValueOfArray<typeof difficultyOptions> | null;
+  fabric?: string | null
+  fabric_amount?: number | null;
 }
 
-const EditPattern = ({ pattern }: EditPatternProps) => {
+const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
+
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
@@ -59,6 +70,11 @@ const EditPattern = ({ pattern }: EditPatternProps) => {
     defaultValues: {
       ...pattern,
       description: pattern.description ?? undefined,
+      pattern_url: pattern.pattern_url ?? undefined,
+      fabric: pattern.fabric ?? undefined,
+      fabric_amount: pattern.fabric_amount ?? undefined,
+      category: pattern.category ?? undefined,
+      // if more nullable fields, normalize them here too
     },
   })
 
@@ -69,6 +85,7 @@ const EditPattern = ({ pattern }: EditPatternProps) => {
       showSuccessToast("Pattern updated successfully.")
       reset()
       setIsOpen(false)
+      closeMenu?.()
     },
     onError: (err: ApiError) => {
       handleError(err)
@@ -81,27 +98,26 @@ const EditPattern = ({ pattern }: EditPatternProps) => {
   const onSubmit: SubmitHandler<PatternUpdateForm> = async (data) => {
     const processedData = {
       ...data,
-      category: data.category === "" ? null : data.category, // Convert empty string to null
+      category: !data.category ? null : data.category, // Convert empty string to null
       description: data.description === "" ? null : data.description, // Convert empty string to null
       pattern_url: data.pattern_url === "" ? null : data.pattern_url, // Convert empty string to null
       fabric: data.fabric === "" ? null : data.fabric, // Convert empty string to null
-      fabric_amount: data.fabric_amount === "" ? null : data.fabric_amount, // Convert empty string to null
+      fabric_amount: !data.fabric_amount ? null : data.fabric_amount, // Convert empty string to null
     };
     mutation.mutate(processedData);
   }
 
-  const brandOptions: PatternPublic["brand"][] = ["Fibre Mood", "Other", "Seamwork"]
-  const versionOptions: PatternPublic["version"][] = ["Paper", "Digital"]
-  const categoryOptions: PatternPublic["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers"]
-  const forWhoOptions: PatternPublic["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets"]
-  const difficultyOptions: PatternPublic["difficulty"][] = [1, 2, 3, 4, 5]
+
 
   return (
     <DialogRoot
       size={{ base: "xs", md: "md" }}
       placement="center"
       open={isOpen}
-      onOpenChange={({ open }) => setIsOpen(open)}
+      onOpenChange={({ open }) => {
+        setIsOpen(open);
+        if (!open && closeMenu) closeMenu(); // Close action menu when dialog is closed
+      }}
     >
       <DialogTrigger asChild>
         <Button variant="ghost">
@@ -202,7 +218,7 @@ const EditPattern = ({ pattern }: EditPatternProps) => {
                     <option value="">
                       Other
                     </option>
-                    {categoryOptions.map((option) => (
+                    {categoryOptions.filter((option): option is Exclude<typeof option, null | undefined> => option !== null && option !== undefined).map((option) => (
                       <option key={option} value={option}>
                         {option}
                       </option>

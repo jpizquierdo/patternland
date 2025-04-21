@@ -5,15 +5,16 @@ import {
   Heading,
   Table,
   VStack,
-  Button,
+  // Button,
   Image,
+  Badge
 } from "@chakra-ui/react"
 import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { FiSearch } from "react-icons/fi"
 import { z } from "zod"
-import { FaExternalLinkAlt } from "react-icons/fa";
+// import { FaExternalLinkAlt } from "react-icons/fa";
 import { PatternsService, OpenAPI } from "@/client"
 import { getHeaders } from "@/client/core/request"
 import { PatternActionsMenu } from "@/components/Common/PatternActionsMenu"
@@ -27,7 +28,8 @@ import {
   PaginationRoot,
 } from "@/components/ui/pagination.tsx"
 import placeholderImage from "/assets/images/favicon.webp";
-
+import { useQueryClient } from "@tanstack/react-query"
+import type { UserPublic } from "@/client"
 const patternsSearchSchema = z.object({
   page: z.number().catch(1),
 })
@@ -48,6 +50,9 @@ export const Route = createFileRoute("/_layout/patterns")({
 })
 
 function PatternsTable() {
+  const queryClient = useQueryClient()
+  // Get the current user from the query cache
+  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
   const navigate = useNavigate({ from: Route.fullPath })
   const { page } = Route.useSearch()
 
@@ -93,15 +98,15 @@ function PatternsTable() {
           <Table.Row>
             <Table.ColumnHeader w="sm">Icon</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Title</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Description</Table.ColumnHeader>
+            {/* <Table.ColumnHeader w="sm">Description</Table.ColumnHeader> */}
             <Table.ColumnHeader w="sm">Brand</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Category</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">For Who</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Version</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">URL</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Difficulty</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Fabric</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Fabric Amount [m]</Table.ColumnHeader>
+            {/* <Table.ColumnHeader w="sm">Version</Table.ColumnHeader> */}
+            {/* <Table.ColumnHeader w="sm">URL</Table.ColumnHeader> */}
+            {/* <Table.ColumnHeader w="sm">Difficulty</Table.ColumnHeader> */}
+            {/* <Table.ColumnHeader w="sm">Fabric</Table.ColumnHeader> */}
+            <Table.ColumnHeader w="sm">Min Fabric Amount [cm]</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -109,31 +114,36 @@ function PatternsTable() {
           {patterns?.map((pattern) => (
             <Table.Row key={pattern.id} opacity={isPlaceholderData ? 0.5 : 1}>
               <Table.Cell truncate maxW="sm">
-                <IconImage filename={pattern.icon} alt={pattern.title} />
+                <IconImage filename={pattern.icon ?? ""} alt={pattern.title} />
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
                 {pattern.title}
+                {currentUser?.id === pattern.owner_id && (
+                  <Badge ml="1" colorScheme="teal">
+                    Yours
+                  </Badge>
+                )}
               </Table.Cell>
-              <Table.Cell
+              {/* <Table.Cell
                 color={!pattern.description ? "gray" : "inherit"}
                 truncate
                 maxW="sm"
                 whiteSpace="normal" // Allow text to wrap
               >
                 {pattern.description || "N/A"}
-              </Table.Cell>
+              </Table.Cell> */}
               <Table.Cell truncate maxW="sm">
                 {pattern.brand}
               </Table.Cell>
               <Table.Cell
-                color={!pattern.description ? "gray" : "inherit"}
+                color={!pattern.category ? "gray" : "inherit"}
                 truncate maxW="sm">
                 {pattern.category || "N/A"}
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
                 {pattern.for_who}
               </Table.Cell>
-              <Table.Cell truncate maxW="sm">
+              {/* <Table.Cell truncate maxW="sm">
                 {pattern.version}
               </Table.Cell>
               <Table.Cell
@@ -143,7 +153,7 @@ function PatternsTable() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => window.open(pattern.pattern_url, "_blank")}
+                    onClick={() => pattern.pattern_url && window.open(pattern.pattern_url, "_blank")}
                   >
                     <FaExternalLinkAlt />
                   </Button>
@@ -160,7 +170,7 @@ function PatternsTable() {
                 color={!pattern.fabric ? "gray" : "inherit"}
                 truncate maxW="sm">
                 {pattern.fabric || "N/A"}
-              </Table.Cell>
+              </Table.Cell> */}
               <Table.Cell
                 color={!pattern.fabric_amount ? "gray" : "inherit"}
                 truncate maxW="sm">

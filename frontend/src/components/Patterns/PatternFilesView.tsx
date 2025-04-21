@@ -13,8 +13,6 @@ import { saveAs } from "file-saver"
 
 import {
     type PatternPublic,
-    PatternsService,
-    type PatternsDownloadFileData,
     OpenAPI
 } from "@/client"
 import { getHeaders } from "@/client/core/request"
@@ -33,11 +31,12 @@ import {
 
 interface PatternFilesViewProps {
     pattern: PatternPublic
+    closeMenu?: () => void
 }
 
 type PatternFilesForm = {}
 
-const FILE_LABELS: Record<keyof PatternPublic, string> = {
+const FILE_LABELS: Partial<Record<keyof PatternPublic, string>> = {
     pattern_a0_file_id: "A0",
     pattern_a0_sa_file_id: "A0 SA",
     pattern_a0_sa_projector_file_id: "A0 SA Projector",
@@ -47,7 +46,7 @@ const FILE_LABELS: Record<keyof PatternPublic, string> = {
     pattern_instructables_file_id: "Instructables"
 }
 
-const PatternFilesView = ({ pattern }: PatternFilesViewProps) => {
+const PatternFilesView = ({ pattern, closeMenu }: PatternFilesViewProps) => {
     const [isOpen, setIsOpen] = useState(false)
     const { showSuccessToast } = useCustomToast()
     const { handleSubmit } = useForm<PatternFilesForm>()
@@ -101,7 +100,10 @@ const PatternFilesView = ({ pattern }: PatternFilesViewProps) => {
             size={{ base: "xs", md: "md" }}
             placement="center"
             open={isOpen}
-            onOpenChange={({ open }) => setIsOpen(open)}
+            onOpenChange={({ open }) => {
+                setIsOpen(open);
+                if (!open && closeMenu) closeMenu(); // Close action menu when dialog is closed
+            }}
         >
             <DialogTrigger asChild>
                 <Button variant="ghost">

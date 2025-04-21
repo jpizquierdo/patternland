@@ -63,8 +63,9 @@ async def upload_files(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
+    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
+        raise HTTPException(status_code=403, detail="Not enough permissions")
 
-    # Upload files to MinIO and store their IDs, excluding None values
     # Upload files to MinIO and store their IDs, excluding None values
     file_ids = {}
     new_files = {
