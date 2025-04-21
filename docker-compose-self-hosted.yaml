@@ -20,7 +20,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z
+    image: quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z-cpuv1
     restart: always
     networks:
       - default
@@ -34,10 +34,10 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD?Variable not set}
     volumes:
       - app-minio-data:/data
-    command: server /data --console-address ":9002" --address ":9001"
+    command: server /data --console-address ":9003" --address ":9002"
     ports:
-      - "9001:9001"
       - "9002:9002"
+      - "9003:9003"
 
   adminer:
     image: adminer
