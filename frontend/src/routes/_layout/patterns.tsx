@@ -93,15 +93,15 @@ function PatternsTable() {
           <Table.Row>
             <Table.ColumnHeader w="sm">Icon</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Title</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Description</Table.ColumnHeader>
+            {/* <Table.ColumnHeader w="sm">Description</Table.ColumnHeader> */}
             <Table.ColumnHeader w="sm">Brand</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Category</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">For Who</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Version</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">URL</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Difficulty</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Fabric</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Fabric Amount [m]</Table.ColumnHeader>
+            {/* <Table.ColumnHeader w="sm">Version</Table.ColumnHeader> */}
+            {/* <Table.ColumnHeader w="sm">URL</Table.ColumnHeader> */}
+            {/* <Table.ColumnHeader w="sm">Difficulty</Table.ColumnHeader> */}
+            {/* <Table.ColumnHeader w="sm">Fabric</Table.ColumnHeader> */}
+            <Table.ColumnHeader w="sm">Min Fabric Amount [cm]</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -114,14 +114,14 @@ function PatternsTable() {
               <Table.Cell truncate maxW="sm">
                 {pattern.title}
               </Table.Cell>
-              <Table.Cell
+              {/* <Table.Cell
                 color={!pattern.description ? "gray" : "inherit"}
                 truncate
                 maxW="sm"
                 whiteSpace="normal" // Allow text to wrap
               >
                 {pattern.description || "N/A"}
-              </Table.Cell>
+              </Table.Cell> */}
               <Table.Cell truncate maxW="sm">
                 {pattern.brand}
               </Table.Cell>
@@ -133,7 +133,7 @@ function PatternsTable() {
               <Table.Cell truncate maxW="sm">
                 {pattern.for_who}
               </Table.Cell>
-              <Table.Cell truncate maxW="sm">
+              {/* <Table.Cell truncate maxW="sm">
                 {pattern.version}
               </Table.Cell>
               <Table.Cell
@@ -160,7 +160,7 @@ function PatternsTable() {
                 color={!pattern.fabric ? "gray" : "inherit"}
                 truncate maxW="sm">
                 {pattern.fabric || "N/A"}
-              </Table.Cell>
+              </Table.Cell> */}
               <Table.Cell
                 color={!pattern.fabric_amount ? "gray" : "inherit"}
                 truncate maxW="sm">
