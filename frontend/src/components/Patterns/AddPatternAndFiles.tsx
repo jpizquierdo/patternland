@@ -85,17 +85,17 @@ const AddPatternAndFiles = () => {
     const onSubmit: SubmitHandler<PatternCreate> = (data) => {
         const processedData = {
             ...data,
-            category: data.category === "" ? null : data.category, // Convert empty string to null
+            category: !data.category ? null : data.category, // Convert empty string to null
             description: data.description === "" ? null : data.description, // Convert empty string to null
             pattern_url: data.pattern_url === "" ? null : data.pattern_url, // Convert empty string to null
             fabric: data.fabric === "" ? null : data.fabric, // Convert empty string to null
-            fabric_amount: data.fabric_amount === "" ? null : data.fabric_amount, // Convert empty string to null
+            fabric_amount: !data.fabric_amount ? null : data.fabric_amount, // Convert empty string to null
         };
         mutation.mutate(processedData);
     }
     const brandOptions: PatternCreate["brand"][] = ["Fibre Mood", "Other", "Seamwork"]
     const versionOptions: PatternCreate["version"][] = ["Paper", "Digital"]
-    const categoryOptions: PatternCreate["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers"]
+    const categoryOptions: PatternCreate["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers", null]
     const forWhoOptions: PatternCreate["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets"]
     const difficultyOptions: PatternCreate["difficulty"][] = [1, 2, 3, 4, 5]
     type ExtendedFormValues = PatternCreate & {
@@ -214,7 +214,7 @@ const AddPatternAndFiles = () => {
                                         <option value="">
                                             Other
                                         </option>
-                                        {categoryOptions.map((option) => (
+                                        {categoryOptions.filter((option): option is Exclude<typeof option, null | undefined> => option !== null && option !== undefined).map((option) => (
                                             <option key={option} value={option}>
                                                 {option}
                                             </option>

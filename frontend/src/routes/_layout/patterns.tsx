@@ -109,7 +109,7 @@ function PatternsTable() {
           {patterns?.map((pattern) => (
             <Table.Row key={pattern.id} opacity={isPlaceholderData ? 0.5 : 1}>
               <Table.Cell truncate maxW="sm">
-                <IconImage filename={pattern.icon} alt={pattern.title} />
+                <IconImage filename={pattern.icon ?? ""} alt={pattern.title} />
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
                 {pattern.title}
@@ -126,7 +126,7 @@ function PatternsTable() {
                 {pattern.brand}
               </Table.Cell>
               <Table.Cell
-                color={!pattern.description ? "gray" : "inherit"}
+                color={!pattern.category ? "gray" : "inherit"}
                 truncate maxW="sm">
                 {pattern.category || "N/A"}
               </Table.Cell>
@@ -143,7 +143,7 @@ function PatternsTable() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => window.open(pattern.pattern_url, "_blank")}
+                    onClick={() => pattern.pattern_url && window.open(pattern.pattern_url, "_blank")}
                   >
                     <FaExternalLinkAlt />
                   </Button>
