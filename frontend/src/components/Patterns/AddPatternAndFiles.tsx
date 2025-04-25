@@ -221,6 +221,10 @@ const AddPatternAndFiles = () => {
                                         ))}
                                     </select>
                                 </Field>
+
+
+                            </HStack>
+                            <HStack gap={2}>
                                 <Field
                                     required
                                     invalid={!!errors.for_who}
@@ -242,9 +246,6 @@ const AddPatternAndFiles = () => {
                                         ))}
                                     </select>
                                 </Field>
-
-                            </HStack>
-                            <HStack gap={2}>
                                 <Field
                                     required
                                     invalid={!!errors.difficulty}
@@ -278,19 +279,19 @@ const AddPatternAndFiles = () => {
                                         type="text"
                                     />
                                 </Field>
-                                <Field
-                                    invalid={!!errors.fabric_amount}
-                                    errorText={errors.fabric_amount?.message}
-                                    label="Fabric Amount [m]"
-                                >
-                                    <Input
-                                        id="fabric_amount"
-                                        {...register("fabric_amount")}
-                                        placeholder="fabric_amount"
-                                        type="number"
-                                    />
-                                </Field>
                             </HStack>
+                            <Field
+                                invalid={!!errors.fabric_amount}
+                                errorText={errors.fabric_amount?.message}
+                                label="Fabric Amount [m]"
+                            >
+                                <Input
+                                    id="fabric_amount"
+                                    {...register("fabric_amount")}
+                                    placeholder="fabric_amount"
+                                    type="number"
+                                />
+                            </Field>
                             <Field
                                 invalid={!!errors.pattern_url}
                                 errorText={errors.pattern_url?.message}
