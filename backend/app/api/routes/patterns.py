@@ -1,13 +1,15 @@
 import uuid
+from datetime import datetime, timezone
 from typing import Any
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import StreamingResponse
 from sqlmodel import func, select
+from sqlmodel.sql.expression import SelectOfScalar
 
 from app.api.deps import CurrentUser, SessionDep
 from app.core.config import settings
-from app.core.s3_storage import s3_client
+from app.core.s3_storage import delete_minio_item, s3_client, upload_to_minio
 from app.models import (
     Message,
     Pattern,
@@ -20,26 +22,35 @@ from app.models import (
 router = APIRouter(prefix="/patterns", tags=["patterns"])
 
 
-# Helper function to upload a file to MinIO and return its ID
-async def upload_to_minio(file: UploadFile | None) -> uuid.UUID | None:
-    if file:
-        file_content = await file.read()
-        file_id = (
-            str(uuid.uuid4()) + "." + file.filename.split(".")[-1]
-        )  # Generate a unique ID for the file
-        s3_client.put_object(Bucket=settings.S3_BUCKET, Key=file_id, Body=file_content)
-        return file_id
-    return None
-
-
-# Helper function to delete old MinIO items
-async def delete_minio_item(file_id: str):
-    try:
-        s3_client.delete_object(Bucket=settings.S3_BUCKET, Key=file_id)
-    except s3_client.exceptions.NoSuchKey:
-        print(f"File {file_id} not found in MinIO, skipping deletion.")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deleting file: {e}")
+async def pattern_filtering(
+    *,
+    title: str,
+    brand: str,
+    version: str,
+    for_who: str,
+    category: str,
+    difficulty: int,
+    fabric: str,
+    fabric_amount: float,
+    statement: SelectOfScalar[Pattern],
+) -> SelectOfScalar[Pattern]:
+    if title is not None:
+        statement = statement.where(Pattern.title == title)
+    if brand is not None:
+        statement = statement.where(Pattern.brand == brand)
+    if version is not None:
+        statement = statement.where(Pattern.version == version)
+    if for_who is not None:
+        statement = statement.where(Pattern.for_who == for_who)
+    if category is not None:
+        statement = statement.where(Pattern.category == category)
+    if difficulty is not None:
+        statement = statement.where(Pattern.difficulty == difficulty)
+    if fabric is not None:
+        statement = statement.where(Pattern.fabric == fabric)
+    if fabric_amount is not None:
+        statement = statement.where(Pattern.fabric_amount == fabric_amount)
+    return statement
 
 
 @router.post("/upload/")
@@ -63,7 +74,7 @@ async def upload_files(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
+    if not current_user.is_superuser or (pattern.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     # Upload files to MinIO and store their IDs, excluding None values
@@ -121,6 +132,15 @@ async def download_file(
 
 @router.get("/", response_model=PatternsPublic)
 async def read_patterns(
+    *,
+    title: str = Query(default=None),
+    brand: str = Query(default=None),
+    version: str = Query(default=None),
+    for_who: str = Query(default=None),
+    category: str = Query(default=None),
+    difficulty: int = Query(default=None),
+    fabric: str = Query(default=None),
+    fabric_amount: float = Query(default=None),
     session: SessionDep,
     current_user: CurrentUser,
     skip: int = 0,
@@ -133,23 +153,45 @@ async def read_patterns(
 
     if not self_patterns:
         count_statement = select(func.count()).select_from(Pattern)
-        count = session.exec(count_statement).one()
         statement = select(Pattern).offset(skip).limit(limit)
-        patterns = session.exec(statement).all()
     else:
         count_statement = (
             select(func.count())
             .select_from(Pattern)
             .where(Pattern.owner_id == current_user.id)
         )
-        count = session.exec(count_statement).one()
+
         statement = (
             select(Pattern)
             .where(Pattern.owner_id == current_user.id)
             .offset(skip)
             .limit(limit)
         )
-        patterns = session.exec(statement).all()
+    count_statement = await pattern_filtering(
+        title=title,
+        brand=brand,
+        version=version,
+        for_who=for_who,
+        category=category,
+        difficulty=difficulty,
+        fabric=fabric,
+        fabric_amount=fabric_amount,
+        statement=count_statement,
+    )
+    count = session.exec(count_statement).one()
+
+    statement = await pattern_filtering(
+        title=title,
+        brand=brand,
+        version=version,
+        for_who=for_who,
+        category=category,
+        difficulty=difficulty,
+        fabric=fabric,
+        fabric_amount=fabric_amount,
+        statement=statement,
+    )
+    patterns = session.exec(statement.order_by(Pattern.updated_at.desc())).all()
 
     return PatternsPublic(data=patterns, count=count)
 
@@ -164,7 +206,7 @@ async def read_pattern(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
+    if not current_user.is_superuser or (pattern.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     return pattern
 
@@ -203,10 +245,12 @@ async def update_pattern(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
+    if not current_user.is_superuser or (pattern.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     update_dict = pattern_in.model_dump(exclude_unset=True)
-    pattern.sqlmodel_update(update_dict)
+    extra_data = {}
+    extra_data["updated_at"] = datetime.now(tz=timezone.utc)
+    pattern.sqlmodel_update(update_dict, update=extra_data)
     session.add(pattern)
     session.commit()
     session.refresh(pattern)
@@ -223,7 +267,7 @@ async def delete_pattern(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
+    if not current_user.is_superuser or (pattern.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     # List of file IDs to delete from MinIO

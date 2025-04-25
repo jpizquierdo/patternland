@@ -1,8 +1,9 @@
 import uuid
+from datetime import datetime, timezone
 from typing import Literal
 
 from pydantic import EmailStr
-from sqlmodel import Field, Relationship, SQLModel, String
+from sqlmodel import DateTime, Field, Relationship, SQLModel, String
 
 
 # Shared properties
@@ -100,7 +101,7 @@ class ItemsPublic(SQLModel):
 # Shared properties
 class PatternBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
-    description: str | None = Field(default=None, max_length=255)
+    description: str | None = Field(default=None, max_length=1023)
     brand: Literal["Fibre Mood", "Other", "Seamwork"] = Field(
         sa_type=String, max_length=255
     )
@@ -140,7 +141,7 @@ class PatternBase(SQLModel):
     ) = Field(default=None, sa_type=String, max_length=255)
     difficulty: int = Field(ge=1, le=5)
     fabric: str | None = Field(default=None, max_length=255)
-    fabric_amount: float | None = Field(default=None)
+    fabric_amount: float | None = Field(default=None)  # in cm
 
 
 # Properties to receive on item creation
@@ -208,6 +209,14 @@ class Pattern(PatternBase, table=True):
     pattern_a4_sa_file_id: str | None = Field(default=None)
     pattern_instructables_file_id: str | None = Field(default=None)
     icon: str | None = Field(default=None)
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(tz=timezone.utc),
+        sa_type=DateTime(timezone=True),
+    )
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(tz=timezone.utc),
+        sa_type=DateTime(timezone=True),
+    )
 
 
 # Properties to return via API, id is always required
