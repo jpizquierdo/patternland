@@ -74,7 +74,7 @@ async def upload_files(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    if not current_user.is_superuser or (pattern.owner_id != current_user.id):
+    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     # Upload files to MinIO and store their IDs, excluding None values
@@ -206,7 +206,7 @@ async def read_pattern(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    if not current_user.is_superuser or (pattern.owner_id != current_user.id):
+    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     return pattern
 
@@ -245,7 +245,7 @@ async def update_pattern(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    if not current_user.is_superuser or (pattern.owner_id != current_user.id):
+    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     update_dict = pattern_in.model_dump(exclude_unset=True)
     extra_data = {}
@@ -267,7 +267,7 @@ async def delete_pattern(
     pattern = session.get(Pattern, id)
     if not pattern:
         raise HTTPException(status_code=404, detail="Pattern not found")
-    if not current_user.is_superuser or (pattern.owner_id != current_user.id):
+    if not current_user.is_superuser and (pattern.owner_id != current_user.id):
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     # List of file IDs to delete from MinIO
