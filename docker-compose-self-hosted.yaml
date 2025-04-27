@@ -52,7 +52,7 @@ services:
       - "8085:8080"
 
   backend:
-    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG_latest}'
     restart: always
     networks:
       - default
@@ -107,7 +107,7 @@ services:
       - "app/main.py"
 
   frontend:
-    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
+    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG_latest}'
     restart: always
     ports:
       - "5173:80"
