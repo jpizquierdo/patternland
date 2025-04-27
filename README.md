@@ -1,7 +1,4 @@
 # PatternLand
-**PROJECT STILL UNDER INITIAL DEVELOPMENT**
-DO NOT USE TILL EXPLICIT INDICATIONS IN RELEASES
-
 
 ## Acknowledgments
 This project mainly uses the following technologies and resources (among others):
