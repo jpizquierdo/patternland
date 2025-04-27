@@ -76,7 +76,7 @@ services:
       - traefik.http.services.${STACK_NAME?Variable not set}-adminer.loadbalancer.server.port=8080
 
   backend:
-    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG_latest}'
     restart: always
     networks:
       - traefik-public
@@ -143,7 +143,7 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect
 
   frontend:
-    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
+    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG_latest}'
     restart: always
     networks:
       - traefik-public
