@@ -30,6 +30,8 @@ import {
 import placeholderImage from "/assets/images/favicon.webp";
 import { useQueryClient } from "@tanstack/react-query"
 import type { UserPublic } from "@/client"
+import { useTranslation } from 'react-i18next';
+
 const patternsSearchSchema = z.object({
   page: z.number().catch(1),
 })
@@ -73,6 +75,8 @@ function PatternsTable() {
     return <PendingPatterns />
   }
 
+  const { t } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+
   if (patterns.length === 0) {
     return (
       <EmptyState.Root>
@@ -81,9 +85,9 @@ function PatternsTable() {
             <FiSearch />
           </EmptyState.Indicator>
           <VStack textAlign="center">
-            <EmptyState.Title>You don't have any patterns yet</EmptyState.Title>
+            <EmptyState.Title>{t('patterns_empty')}</EmptyState.Title>
             <EmptyState.Description>
-              Add a new pattern to get started
+              {t('patterns_empty_description')}
             </EmptyState.Description>
           </VStack>
         </EmptyState.Content>
@@ -96,18 +100,18 @@ function PatternsTable() {
       <Table.Root size={{ base: "sm", md: "md" }}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="sm">Icon</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Title</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('icon')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('title')}</Table.ColumnHeader>
             {/* <Table.ColumnHeader w="sm">Description</Table.ColumnHeader> */}
-            <Table.ColumnHeader w="sm">Brand</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Category</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">For Who</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('brand')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('category')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('for_who')}</Table.ColumnHeader>
             {/* <Table.ColumnHeader w="sm">Version</Table.ColumnHeader> */}
             {/* <Table.ColumnHeader w="sm">URL</Table.ColumnHeader> */}
             {/* <Table.ColumnHeader w="sm">Difficulty</Table.ColumnHeader> */}
             {/* <Table.ColumnHeader w="sm">Fabric</Table.ColumnHeader> */}
-            <Table.ColumnHeader w="sm">Min Fabric Amount [cm]</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('min_fabric_amount')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('actions')}</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -201,10 +205,12 @@ function PatternsTable() {
 }
 //      //<AddPattern />
 function Patterns() {
+  const { t } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+
   return (
     <Container maxW="full">
       <Heading size="lg" pt={12}>
-        Patterns Management
+        {t('patterns_management')}
       </Heading>
 
       <AddPatternAndFiles />
