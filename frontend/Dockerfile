@@ -19,5 +19,11 @@ FROM nginx:1
 
 COPY --from=build-stage /app/dist/ /usr/share/nginx/html
 
+# Copy a script that generates config.json based on environment variables
+COPY generate-config.sh /usr/share/nginx/html/generate-config.sh
+RUN chmod +x /usr/share/nginx/html/generate-config.sh
+
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./nginx-backend-not-found.conf /etc/nginx/extra-conf.d/backend-not-found.conf
+# Execute the script during container startup
+CMD ["/bin/sh", "-c", "/usr/share/nginx/html/generate-config.sh && nginx -g 'daemon off;'"]

@@ -2,7 +2,15 @@
 // for local environments
 import { OpenAPI, PrivateService } from "../../src/client"
 
-OpenAPI.BASE = `${process.env.VITE_API_URL}`
+async function loadConfig() {
+  const response = await fetch("/config.json");
+  const config = await response.json();
+  return config;
+}
+
+loadConfig().then((config) => {
+  OpenAPI.BASE = config.VITE_API_URL;
+})
 
 export const createUser = async ({
   email,
