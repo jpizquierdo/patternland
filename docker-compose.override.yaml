@@ -105,8 +105,10 @@ services:
     build:
       context: ./frontend
       args:
-        - VITE_API_URL=http://localhost:8000
+        #- VITE_API_URL=http://localhost:8000
         - NODE_ENV=development
+    environment:
+      - VITE_API_URL=http://localhost:8000
 
   playwright:
     build:
