@@ -59,7 +59,7 @@ export type NewPassword = {
 export type PatternCreate = {
   title: string
   description?: string | null
-  brand: "Fibre Mood" | "Other" | "Seamwork"
+  brand: "Fibre Mood" | "Other" | "Seamwork" | "Katia" | "Burda" | "Patrones"
   version: "Paper" | "Digital"
   pattern_url?: string | null
   for_who: "Baby" | "Kids" | "Men" | "Women" | "Pets" | "Unisex"
@@ -93,7 +93,13 @@ export type PatternCreate = {
   fabric_amount?: number | null
 }
 
-export type brand = "Fibre Mood" | "Other" | "Seamwork"
+export type brand =
+  | "Fibre Mood"
+  | "Other"
+  | "Seamwork"
+  | "Katia"
+  | "Burda"
+  | "Patrones"
 
 export type version = "Paper" | "Digital"
 
@@ -102,7 +108,7 @@ export type for_who = "Baby" | "Kids" | "Men" | "Women" | "Pets" | "Unisex"
 export type PatternPublic = {
   title: string
   description?: string | null
-  brand: "Fibre Mood" | "Other" | "Seamwork"
+  brand: "Fibre Mood" | "Other" | "Seamwork" | "Katia" | "Burda" | "Patrones"
   version: "Paper" | "Digital"
   pattern_url?: string | null
   for_who: "Baby" | "Kids" | "Men" | "Women" | "Pets" | "Unisex"
@@ -154,7 +160,14 @@ export type PatternsPublic = {
 export type PatternUpdate = {
   title?: string | null
   description?: string | null
-  brand?: "Fibre Mood" | "Other" | "Seamwork" | null
+  brand?:
+    | "Fibre Mood"
+    | "Other"
+    | "Seamwork"
+    | "Katia"
+    | "Burda"
+    | "Patrones"
+    | null
   version?: "Paper" | "Digital" | null
   pattern_url?: string | null
   for_who?: "Baby" | "Kids" | "Men" | "Women" | "Pets" | "Unisex" | null

@@ -32,7 +32,7 @@ import { useTranslation } from 'react-i18next';
 type ValueOfArray<T extends Readonly<any[]>> = T[number];
 
 
-const brandOptions: PatternPublic["brand"][] = ["Fibre Mood", "Other", "Seamwork"]
+const brandOptions: PatternPublic["brand"][] = ["Fibre Mood", "Other", "Seamwork", "Katia", "Burda", "Patrones"]
 const versionOptions: PatternPublic["version"][] = ["Paper", "Digital"]
 const categoryOptions: PatternPublic["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers", null]
 const forWhoOptions: PatternPublic["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets", "Unisex"]

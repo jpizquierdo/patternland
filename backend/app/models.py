@@ -102,9 +102,14 @@ class ItemsPublic(SQLModel):
 class PatternBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=1023)
-    brand: Literal["Fibre Mood", "Other", "Seamwork"] = Field(
-        sa_type=String, max_length=255
-    )
+    brand: Literal[
+        "Fibre Mood",
+        "Other",
+        "Seamwork",
+        "Katia",
+        "Burda",
+        "Patrones",
+    ] = Field(sa_type=String, max_length=255)
     version: Literal["Paper", "Digital"] = Field(sa_type=String, max_length=255)
     pattern_url: str | None = Field(default=None, max_length=255)
     for_who: Literal["Baby", "Kids", "Men", "Women", "Pets", "Unisex"] = Field(
@@ -153,9 +158,17 @@ class PatternCreate(PatternBase):
 class PatternUpdate(PatternBase):
     title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
     description: str | None = Field(default=None, max_length=255)
-    brand: Literal["Fibre Mood", "Other", "Seamwork"] | None = Field(
-        default=None, max_length=255
-    )
+    brand: (
+        Literal[
+            "Fibre Mood",
+            "Other",
+            "Seamwork",
+            "Katia",
+            "Burda",
+            "Patrones",
+        ]
+        | None
+    ) = Field(default=None, max_length=255)
     version: Literal["Paper", "Digital"] | None = Field(default=None, max_length=255)
     pattern_url: str | None = Field(default=None, max_length=255)
     for_who: Literal["Baby", "Kids", "Men", "Women", "Pets", "Unisex"] | None = Field(
