@@ -1,7 +1,9 @@
 import { Button, Center, Flex, Text } from "@chakra-ui/react"
 import { Link } from "@tanstack/react-router"
+import { useTranslation } from 'react-i18next';
 
 const NotFound = () => {
+  const { t } = useTranslation('common'); // 👈 tells i18next to use "common.json"
   return (
     <>
       <Flex
@@ -35,7 +37,7 @@ const NotFound = () => {
           textAlign="center"
           zIndex={1}
         >
-          The page you are looking for was not found.
+          {t('not_found')}
         </Text>
         <Center zIndex={1}>
           <Link to="/">
@@ -45,7 +47,7 @@ const NotFound = () => {
               mt={4}
               alignSelf="center"
             >
-              Go Back
+              {t('goBack')}
             </Button>
           </Link>
         </Center>

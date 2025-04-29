@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import useCustomToast from "@/hooks/useCustomToast"
+import { useTranslation } from 'react-i18next';
 
 const DeleteUser = ({ id }: { id: string }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -30,14 +31,17 @@ const DeleteUser = ({ id }: { id: string }) => {
     await UsersService.deleteUser({ userId: id })
   }
 
+  const { t: tAdmin } = useTranslation('admin'); // 👈 tells i18next to use "admin.json"
+  const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
+
   const mutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      showSuccessToast("The user was deleted successfully")
+      showSuccessToast(tAdmin('delete_user_success'))
       setIsOpen(false)
     },
     onError: () => {
-      showErrorToast("An error occurred while deleting the user")
+      showErrorToast(tAdmin('delete_user_error'))
     },
     onSettled: () => {
       queryClient.invalidateQueries()
@@ -59,19 +63,18 @@ const DeleteUser = ({ id }: { id: string }) => {
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" colorPalette="red">
           <FiTrash2 fontSize="16px" />
-          Delete User
+          {tAdmin('delete_user')}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Delete User</DialogTitle>
+            <DialogTitle>{tAdmin('delete_user')}</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Text mb={4}>
-              All items associated with this user will also be{" "}
-              <strong>permanently deleted.</strong> Are you sure? You will not
-              be able to undo this action.
+              {tAdmin('delete_user_description_1')}{" "}
+              <strong>{tAdmin('delete_user_description_2')}</strong> {tAdmin('delete_user_description_3')}
             </Text>
           </DialogBody>
 
@@ -82,7 +85,7 @@ const DeleteUser = ({ id }: { id: string }) => {
                 colorPalette="gray"
                 disabled={isSubmitting}
               >
-                Cancel
+                {tCommon('cancel')}
               </Button>
             </DialogActionTrigger>
             <Button
@@ -91,7 +94,7 @@ const DeleteUser = ({ id }: { id: string }) => {
               type="submit"
               loading={isSubmitting}
             >
-              Delete
+              {tCommon('delete')}
             </Button>
           </DialogFooter>
           <DialogCloseTrigger />

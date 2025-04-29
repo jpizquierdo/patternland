@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import useCustomToast from "@/hooks/useCustomToast"
+import { useTranslation } from 'react-i18next';
 
 const DeletePattern = ({ id }: { id: string }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -29,15 +30,17 @@ const DeletePattern = ({ id }: { id: string }) => {
   const deletePattern = async (id: string) => {
     await PatternsService.deletePattern({ id: id })
   }
+  const { t: tPattern } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+  const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
 
   const mutation = useMutation({
     mutationFn: deletePattern,
     onSuccess: () => {
-      showSuccessToast("The pattern was deleted successfully")
+      showSuccessToast(tPattern('pattern_delete_success'))
       setIsOpen(false)
     },
     onError: () => {
-      showErrorToast("An error occurred while deleting the pattern")
+      showErrorToast(tPattern('pattern_delete_error'))
     },
     onSettled: () => {
       queryClient.invalidateQueries()
@@ -59,7 +62,7 @@ const DeletePattern = ({ id }: { id: string }) => {
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" colorPalette="red">
           <FiTrash2 fontSize="16px" />
-          Delete Pattern
+          {tPattern('delete_pattern')}
         </Button>
       </DialogTrigger>
 
@@ -67,12 +70,11 @@ const DeletePattern = ({ id }: { id: string }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogCloseTrigger />
           <DialogHeader>
-            <DialogTitle>Delete Pattern</DialogTitle>
+            <DialogTitle>{tPattern('delete_pattern')}</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Text mb={4}>
-              This pattern will be permanently deleted. Are you sure? You will not
-              be able to undo this action.
+              {tPattern('pattern_delete_confirmation')}
             </Text>
           </DialogBody>
 
@@ -83,7 +85,7 @@ const DeletePattern = ({ id }: { id: string }) => {
                 colorPalette="gray"
                 disabled={isSubmitting}
               >
-                Cancel
+                {tCommon('cancel')}
               </Button>
             </DialogActionTrigger>
             <Button
@@ -92,7 +94,7 @@ const DeletePattern = ({ id }: { id: string }) => {
               type="submit"
               loading={isSubmitting}
             >
-              Delete
+              {tCommon('delete')}
             </Button>
           </DialogFooter>
         </form>

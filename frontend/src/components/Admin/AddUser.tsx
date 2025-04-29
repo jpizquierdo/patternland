@@ -27,6 +27,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
+import { useTranslation } from 'react-i18next';
 
 interface UserCreateForm extends UserCreate {
   confirm_password: string
@@ -55,12 +56,13 @@ const AddUser = () => {
       is_active: false,
     },
   })
-
+  const { t: tAdmin } = useTranslation('admin'); // 👈 tells i18next to use "admin.json"
+  const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
   const mutation = useMutation({
     mutationFn: (data: UserCreate) =>
       UsersService.createUser({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("User created successfully.")
+      showSuccessToast(tAdmin('add_user_success'))
       reset()
       setIsOpen(false)
     },
@@ -86,17 +88,17 @@ const AddUser = () => {
       <DialogTrigger asChild>
         <Button value="add-user" my={4}>
           <FaPlus fontSize="16px" />
-          Add User
+          {tAdmin('add_user')}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Add User</DialogTitle>
+            <DialogTitle>{tAdmin('add_user')}</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Text mb={4}>
-              Fill in the form below to add a new user to the system.
+              {tAdmin('add_user_description')}
             </Text>
             <VStack gap={4}>
               <Field
@@ -108,7 +110,7 @@ const AddUser = () => {
                 <Input
                   id="email"
                   {...register("email", {
-                    required: "Email is required",
+                    required: tAdmin('email_required'),
                     pattern: emailPattern,
                   })}
                   placeholder="Email"
@@ -119,12 +121,12 @@ const AddUser = () => {
               <Field
                 invalid={!!errors.full_name}
                 errorText={errors.full_name?.message}
-                label="Full Name"
+                label={tAdmin('full_name')}
               >
                 <Input
                   id="name"
                   {...register("full_name")}
-                  placeholder="Full name"
+                  placeholder={tAdmin('full_name')}
                   type="text"
                 />
               </Field>
@@ -133,18 +135,18 @@ const AddUser = () => {
                 required
                 invalid={!!errors.password}
                 errorText={errors.password?.message}
-                label="Set Password"
+                label={tAdmin('set_password')}
               >
                 <Input
                   id="password"
                   {...register("password", {
-                    required: "Password is required",
+                    required: tAdmin('password_required'),
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters",
+                      message: tAdmin('password_min_length'),
                     },
                   })}
-                  placeholder="Password"
+                  placeholder={tAdmin('password')}
                   type="password"
                 />
               </Field>
@@ -153,17 +155,17 @@ const AddUser = () => {
                 required
                 invalid={!!errors.confirm_password}
                 errorText={errors.confirm_password?.message}
-                label="Confirm Password"
+                label={tAdmin('confirm_password')}
               >
                 <Input
                   id="confirm_password"
                   {...register("confirm_password", {
-                    required: "Please confirm your password",
+                    required: tAdmin('confirm_password_required'),
                     validate: (value) =>
                       value === getValues().password ||
-                      "The passwords do not match",
+                      tAdmin('confirm_password_match'),
                   })}
-                  placeholder="Password"
+                  placeholder={tAdmin('password')}
                   type="password"
                 />
               </Field>
@@ -179,7 +181,7 @@ const AddUser = () => {
                       checked={field.value}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is superuser?
+                      {tAdmin('is_superuser')}
                     </Checkbox>
                   </Field>
                 )}
@@ -193,7 +195,7 @@ const AddUser = () => {
                       checked={field.value}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is active?
+                      {tAdmin('is_active')}
                     </Checkbox>
                   </Field>
                 )}
@@ -208,7 +210,7 @@ const AddUser = () => {
                 colorPalette="gray"
                 disabled={isSubmitting}
               >
-                Cancel
+                {tCommon('cancel')}
               </Button>
             </DialogActionTrigger>
             <Button
@@ -217,7 +219,7 @@ const AddUser = () => {
               disabled={!isValid}
               loading={isSubmitting}
             >
-              Save
+              {tCommon('save')}
             </Button>
           </DialogFooter>
         </form>

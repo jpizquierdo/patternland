@@ -7,6 +7,7 @@ import { type ApiError, type UpdatePassword, UsersService } from "@/client"
 import useCustomToast from "@/hooks/useCustomToast"
 import { confirmPasswordRules, handleError, passwordRules } from "@/utils"
 import { PasswordInput } from "../ui/password-input"
+import { useTranslation } from 'react-i18next';
 
 interface UpdatePasswordForm extends UpdatePassword {
   confirm_password: string
@@ -25,11 +26,14 @@ const ChangePassword = () => {
     criteriaMode: "all",
   })
 
+  const { t: tAdmin } = useTranslation('admin'); // 👈 tells i18next to use "admin.json"
+  const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
+
   const mutation = useMutation({
     mutationFn: (data: UpdatePassword) =>
       UsersService.updatePasswordMe({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Password updated successfully.")
+      showSuccessToast(tAdmin('password_update_success'))
       reset()
     },
     onError: (err: ApiError) => {
@@ -45,7 +49,7 @@ const ChangePassword = () => {
     <>
       <Container maxW="full">
         <Heading size="sm" py={4}>
-          Change Password
+          {tAdmin('change_password')}
         </Heading>
         <Box as="form" onSubmit={handleSubmit(onSubmit)}>
           <VStack gap={4} w={{ base: "100%", md: "sm" }}>
@@ -53,21 +57,21 @@ const ChangePassword = () => {
               type="current_password"
               startElement={<FiLock />}
               {...register("current_password", passwordRules())}
-              placeholder="Current Password"
+              placeholder={tAdmin('current_password')}
               errors={errors}
             />
             <PasswordInput
               type="new_password"
               startElement={<FiLock />}
               {...register("new_password", passwordRules())}
-              placeholder="New Password"
+              placeholder={tAdmin('new_password')}
               errors={errors}
             />
             <PasswordInput
               type="confirm_password"
               startElement={<FiLock />}
               {...register("confirm_password", confirmPasswordRules(getValues))}
-              placeholder="Confirm Password"
+              placeholder={tAdmin('confirm_password')}
               errors={errors}
             />
           </VStack>
@@ -78,7 +82,7 @@ const ChangePassword = () => {
             loading={isSubmitting}
             disabled={!isValid}
           >
-            Save
+            {tCommon('save')}
           </Button>
         </Box>
       </Container>

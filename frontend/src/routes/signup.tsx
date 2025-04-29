@@ -1,4 +1,4 @@
-import { Container, Flex, Image, Input, Text } from "@chakra-ui/react"
+import { Container, Flex, Image, Input, Text, Spinner, Center } from "@chakra-ui/react"
 import {
   Link as RouterLink,
   createFileRoute,
@@ -15,9 +15,19 @@ import { PasswordInput } from "@/components/ui/password-input"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 import { confirmPasswordRules, emailPattern, passwordRules } from "@/utils"
 import Logo from "/assets/images/patternland-logo.svg"
+import { useTranslation } from 'react-i18next';
+import { Suspense } from "react"
 
 export const Route = createFileRoute("/signup")({
-  component: SignUp,
+  component: () => (
+    <Suspense fallback={
+      <Center minH="100vh">
+        <Spinner size="xl" />
+      </Center>
+    }>
+      <SignUp />
+    </Suspense>
+  ),
   beforeLoad: async () => {
     if (isLoggedIn()) {
       throw redirect({
@@ -32,6 +42,14 @@ interface UserRegisterForm extends UserRegister {
 }
 
 function SignUp() {
+  const { t: tAdmin, ready } = useTranslation('admin');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const { signUpMutation } = useAuth()
   const {
     register,
@@ -68,7 +86,7 @@ function SignUp() {
         >
           <Image
             src={Logo}
-            alt="FastAPI logo"
+            alt="Patternland logo"
             height="auto"
             maxW="2xs"
             alignSelf="center"
@@ -83,9 +101,9 @@ function SignUp() {
                 id="full_name"
                 minLength={3}
                 {...register("full_name", {
-                  required: "Full Name is required",
+                  required: tAdmin('full_name_required'),
                 })}
-                placeholder="Full Name"
+                placeholder={tAdmin('full_name')}
                 type="text"
               />
             </InputGroup>
@@ -96,7 +114,7 @@ function SignUp() {
               <Input
                 id="email"
                 {...register("email", {
-                  required: "Email is required",
+                  required: tAdmin('email_required'),
                   pattern: emailPattern,
                 })}
                 placeholder="Email"
@@ -108,23 +126,23 @@ function SignUp() {
             type="password"
             startElement={<FiLock />}
             {...register("password", passwordRules())}
-            placeholder="Password"
+            placeholder={tAdmin('password')}
             errors={errors}
           />
           <PasswordInput
             type="confirm_password"
             startElement={<FiLock />}
             {...register("confirm_password", confirmPasswordRules(getValues))}
-            placeholder="Confirm Password"
+            placeholder={tAdmin('confirm_password')}
             errors={errors}
           />
           <Button variant="solid" type="submit" loading={isSubmitting}>
-            Sign Up
+            {tAdmin('sign_up')}
           </Button>
           <Text>
-            Already have an account?{" "}
+            {tAdmin('already_have_an_account')}{" "}
             <RouterLink to="/login" className="main-link">
-              Log In
+              {tAdmin('log_in')}
             </RouterLink>
           </Text>
         </Container>

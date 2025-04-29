@@ -21,6 +21,7 @@ import useAuth from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import { emailPattern, handleError } from "@/utils"
 import { Field } from "../ui/field"
+import { useTranslation } from 'react-i18next';
 
 const UserInformation = () => {
   const queryClient = useQueryClient()
@@ -46,11 +47,14 @@ const UserInformation = () => {
     setEditMode(!editMode)
   }
 
+  const { t: tAdmin } = useTranslation('admin'); // 👈 tells i18next to use "admin.json"
+  const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
+
   const mutation = useMutation({
     mutationFn: (data: UserUpdateMe) =>
       UsersService.updateUserMe({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("User updated successfully.")
+      showSuccessToast(tAdmin('edit_user_success'))
     },
     onError: (err: ApiError) => {
       handleError(err)
@@ -73,14 +77,14 @@ const UserInformation = () => {
     <>
       <Container maxW="full">
         <Heading size="sm" py={4}>
-          User Information
+          {tAdmin('user_information')}
         </Heading>
         <Box
           w={{ sm: "full", md: "sm" }}
           as="form"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Field label="Full name">
+          <Field label={tAdmin('full_name')}>
             {editMode ? (
               <Input
                 {...register("full_name", { maxLength: 30 })}
@@ -108,7 +112,7 @@ const UserInformation = () => {
             {editMode ? (
               <Input
                 {...register("email", {
-                  required: "Email is required",
+                  required: tAdmin('email_required'),
                   pattern: emailPattern,
                 })}
                 type="email"
@@ -137,7 +141,7 @@ const UserInformation = () => {
                 onClick={onCancel}
                 disabled={isSubmitting}
               >
-                Cancel
+                {tCommon('cancel')}
               </Button>
             )}
           </Flex>

@@ -7,7 +7,7 @@ import {
   VStack,
   // Button,
   Image,
-  Badge
+  Badge, Spinner, Center
 } from "@chakra-ui/react"
 import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query"
@@ -18,7 +18,6 @@ import { z } from "zod"
 import { PatternsService, OpenAPI } from "@/client"
 import { getHeaders } from "@/client/core/request"
 import { PatternActionsMenu } from "@/components/Common/PatternActionsMenu"
-//import AddPattern from "@/components/Patterns/AddPattern"
 import AddPatternAndFiles from "@/components/Patterns/AddPatternAndFiles"
 import PendingPatterns from "@/components/Pending/PendingPatterns"
 import {
@@ -31,6 +30,7 @@ import placeholderImage from "/assets/images/favicon.webp";
 import { useQueryClient } from "@tanstack/react-query"
 import type { UserPublic } from "@/client"
 import { useTranslation } from 'react-i18next';
+import { Suspense } from "react"
 
 const patternsSearchSchema = z.object({
   page: z.number().catch(1),
@@ -46,12 +46,34 @@ function getPatternsQueryOptions({ page }: { page: number }) {
   }
 }
 
+// export const Route = createFileRoute("/_layout/patterns")({
+//   component: Patterns,
+//   validateSearch: (search) => patternsSearchSchema.parse(search),
+// })
 export const Route = createFileRoute("/_layout/patterns")({
-  component: Patterns,
+  component: () => (
+    <Suspense fallback={
+      <Center minH="100vh">
+        <Spinner size="xl" />
+      </Center>
+    }>
+      <Patterns />
+    </Suspense>
+  ),
   validateSearch: (search) => patternsSearchSchema.parse(search),
 })
 
+
+
 function PatternsTable() {
+  const { t, ready } = useTranslation('pattern');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const queryClient = useQueryClient()
   // Get the current user from the query cache
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
@@ -75,7 +97,7 @@ function PatternsTable() {
     return <PendingPatterns />
   }
 
-  const { t } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+
 
   if (patterns.length === 0) {
     return (
@@ -124,7 +146,7 @@ function PatternsTable() {
                 {pattern.title}
                 {currentUser?.id === pattern.owner_id && (
                   <Badge ml="1" colorScheme="teal">
-                    Yours
+                    {t('my_pattern')}
                   </Badge>
                 )}
               </Table.Cell>
@@ -205,7 +227,15 @@ function PatternsTable() {
 }
 //      //<AddPattern />
 function Patterns() {
-  const { t } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+
+  const { t, ready } = useTranslation('pattern');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
 
   return (
     <Container maxW="full">

@@ -1,4 +1,4 @@
-import { Container, Heading, Input, Text } from "@chakra-ui/react"
+import { Container, Heading, Input, Text, Spinner, Center } from "@chakra-ui/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
@@ -11,13 +11,23 @@ import { InputGroup } from "@/components/ui/input-group"
 import { isLoggedIn } from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import { emailPattern, handleError } from "@/utils"
+import { useTranslation } from 'react-i18next';
+import { Suspense } from "react"
 
 interface FormData {
   email: string
 }
 
 export const Route = createFileRoute("/recover-password")({
-  component: RecoverPassword,
+  component: () => (
+    <Suspense fallback={
+      <Center minH="100vh">
+        <Spinner size="xl" />
+      </Center>
+    }>
+      <RecoverPassword />
+    </Suspense>
+  ),
   beforeLoad: async () => {
     if (isLoggedIn()) {
       throw redirect({
@@ -28,6 +38,14 @@ export const Route = createFileRoute("/recover-password")({
 })
 
 function RecoverPassword() {
+  const { t: tAdmin, ready } = useTranslation('admin');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const {
     register,
     handleSubmit,
@@ -45,7 +63,7 @@ function RecoverPassword() {
   const mutation = useMutation({
     mutationFn: recoverPassword,
     onSuccess: () => {
-      showSuccessToast("Password recovery email sent successfully.")
+      showSuccessToast(tAdmin("password_recovery_success"))
       reset()
     },
     onError: (err: ApiError) => {
@@ -69,10 +87,10 @@ function RecoverPassword() {
       centerContent
     >
       <Heading size="xl" color="ui.main" textAlign="center" mb={2}>
-        Password Recovery
+        {tAdmin('password_recovery')}
       </Heading>
       <Text textAlign="center">
-        A password recovery email will be sent to the registered account.
+        {tAdmin('password_recovery_description')}
       </Text>
       <Field invalid={!!errors.email} errorText={errors.email?.message}>
         <InputGroup w="100%" startElement={<FiMail />}>
@@ -88,7 +106,7 @@ function RecoverPassword() {
         </InputGroup>
       </Field>
       <Button variant="solid" type="submit" loading={isSubmitting}>
-        Continue
+        {tAdmin('continue')}
       </Button>
     </Container>
   )
