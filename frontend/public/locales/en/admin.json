@@ -58,5 +58,6 @@
     "reset_password_description": "Please enter your new password and confirm it to reset your password.",
     "full_name_required": "Full Name is required",
     "already_have_an_account": "Already have an account?",
-    "user_information": "User Information"
+    "user_information": "User Information",
+    "danger_zone": "Danger Zone"
 }

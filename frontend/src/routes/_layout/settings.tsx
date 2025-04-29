@@ -9,12 +9,7 @@ import UserInformation from "@/components/UserSettings/UserInformation"
 import useAuth from "@/hooks/useAuth"
 import { useTranslation } from 'react-i18next';
 
-const tabsConfig = [
-  { value: "my-profile", title: "My profile", component: UserInformation },
-  { value: "password", title: "Password", component: ChangePassword },
-  { value: "appearance", title: "Appearance", component: Appearance },
-  { value: "danger-zone", title: "Danger zone", component: DeleteAccount },
-]
+
 
 export const Route = createFileRoute("/_layout/settings")({
   component: () => (
@@ -29,15 +24,6 @@ export const Route = createFileRoute("/_layout/settings")({
 })
 
 function UserSettings() {
-  const { user: currentUser } = useAuth()
-  const finalTabs = currentUser?.is_superuser
-    ? tabsConfig.slice(0, 3)
-    : tabsConfig
-
-  if (!currentUser) {
-    return null
-  }
-
   const { t: tAdmin, ready } = useTranslation('admin');
   if (!ready) {
     return (
@@ -45,6 +31,22 @@ function UserSettings() {
         <Spinner size="lg" />
       </Center>
     )
+  }
+  const { t: tCommon } = useTranslation('common');
+
+  const tabsConfig = [
+    { value: "my-profile", title: tCommon('my_profile'), component: UserInformation },
+    { value: "password", title: tAdmin('password'), component: ChangePassword },
+    { value: "appearance", title: tAdmin('appearance'), component: Appearance },
+    { value: "danger-zone", title: tAdmin('appearance'), component: DeleteAccount },
+  ]
+  const { user: currentUser } = useAuth()
+  const finalTabs = currentUser?.is_superuser
+    ? tabsConfig.slice(0, 3)
+    : tabsConfig
+
+  if (!currentUser) {
+    return null
   }
 
   return (

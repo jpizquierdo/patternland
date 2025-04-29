@@ -58,5 +58,6 @@
     "reset_password_description": "Por favor, ingrese su nueva contraseña y confírmela para restablecer su contraseña.",
     "full_name_required": "El nombre completo es obligatorio",
     "already_have_an_account": "¿Ya tienes una cuenta?",
-    "user_information": "Información del usuario"
+    "user_information": "Información del usuario",
+    "danger_zone": "Zona de peligro"
 }
