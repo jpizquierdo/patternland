@@ -27,7 +27,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../ui/dialog"
-
+import { useTranslation } from 'react-i18next';
 
 interface PatternFilesViewProps {
     pattern: PatternPublic
@@ -54,7 +54,7 @@ const PatternFilesView = ({ pattern, closeMenu }: PatternFilesViewProps) => {
     const onSubmit: SubmitHandler<PatternFilesForm> = () => {
         // No-op, form isn't submitting anything
     }
-
+    const { t } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
     const handleDownload = async (filename: string) => {
         try {
             // TODO: investigate why this is not working, downloaded file were corrupted using automatic fetch from axios
@@ -75,13 +75,13 @@ const PatternFilesView = ({ pattern, closeMenu }: PatternFilesViewProps) => {
                 headers,
             })
 
-            if (!response.ok) throw new Error("Download failed");
+            if (!response.ok) throw new Error(t('download_failed'));
 
             const blob = await response.blob();
             saveAs(blob, filename);
-            showSuccessToast("File downloaded.");
+            showSuccessToast(t('file_downloaded'));
         } catch (error) {
-            console.error("Download failed", error)
+            console.error(t('download_failed'), error)
         }
     }
 
@@ -108,16 +108,16 @@ const PatternFilesView = ({ pattern, closeMenu }: PatternFilesViewProps) => {
             <DialogTrigger asChild>
                 <Button variant="ghost">
                     <FaDownload fontSize="16px" />
-                    View Files
+                    {t('view_files')}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader>
-                        <DialogTitle>Pattern Files</DialogTitle>
+                        <DialogTitle>{t('pattern_files')}</DialogTitle>
                     </DialogHeader>
                     <DialogBody>
-                        <Text mb={4}>Click to download available files.</Text>
+                        <Text mb={4}>{t('pattern_download_text')}</Text>
                         <VStack align="stretch" gap={3}>
                             {fileKeys.map((key) => {
                                 const fileId = pattern[key]
@@ -134,11 +134,11 @@ const PatternFilesView = ({ pattern, closeMenu }: PatternFilesViewProps) => {
                                                 onClick={() => handleDownload(fileId)}
                                             >
                                                 <FaDownload />
-                                                Download
+                                                {t('download')}
                                             </Button>
                                         ) : (
                                             <Text fontStyle="italic" color="gray.500">
-                                                Not available
+                                                {t('not_available')}
                                             </Text>
                                         )}
                                     </HStack>
@@ -151,7 +151,7 @@ const PatternFilesView = ({ pattern, closeMenu }: PatternFilesViewProps) => {
                         <ButtonGroup>
                             <DialogActionTrigger asChild>
                                 <Button variant="subtle" colorPalette="gray">
-                                    Close
+                                    {t('close')}
                                 </Button>
                             </DialogActionTrigger>
                         </ButtonGroup>

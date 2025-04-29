@@ -7,7 +7,7 @@ import {
   VStack,
   // Button,
   Image,
-  Badge
+  Badge, Spinner, Center
 } from "@chakra-ui/react"
 import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query"
@@ -18,7 +18,6 @@ import { z } from "zod"
 import { PatternsService, OpenAPI } from "@/client"
 import { getHeaders } from "@/client/core/request"
 import { PatternActionsMenu } from "@/components/Common/PatternActionsMenu"
-//import AddPattern from "@/components/Patterns/AddPattern"
 import AddPatternAndFiles from "@/components/Patterns/AddPatternAndFiles"
 import PendingPatterns from "@/components/Pending/PendingPatterns"
 import {
@@ -30,6 +29,9 @@ import {
 import placeholderImage from "/assets/images/favicon.webp";
 import { useQueryClient } from "@tanstack/react-query"
 import type { UserPublic } from "@/client"
+import { useTranslation } from 'react-i18next';
+import { Suspense } from "react"
+
 const patternsSearchSchema = z.object({
   page: z.number().catch(1),
 })
@@ -44,12 +46,34 @@ function getPatternsQueryOptions({ page }: { page: number }) {
   }
 }
 
+// export const Route = createFileRoute("/_layout/patterns")({
+//   component: Patterns,
+//   validateSearch: (search) => patternsSearchSchema.parse(search),
+// })
 export const Route = createFileRoute("/_layout/patterns")({
-  component: Patterns,
+  component: () => (
+    <Suspense fallback={
+      <Center minH="100vh">
+        <Spinner size="xl" />
+      </Center>
+    }>
+      <Patterns />
+    </Suspense>
+  ),
   validateSearch: (search) => patternsSearchSchema.parse(search),
 })
 
+
+
 function PatternsTable() {
+  const { t, ready } = useTranslation('pattern');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const queryClient = useQueryClient()
   // Get the current user from the query cache
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
@@ -73,6 +97,8 @@ function PatternsTable() {
     return <PendingPatterns />
   }
 
+
+
   if (patterns.length === 0) {
     return (
       <EmptyState.Root>
@@ -81,9 +107,9 @@ function PatternsTable() {
             <FiSearch />
           </EmptyState.Indicator>
           <VStack textAlign="center">
-            <EmptyState.Title>You don't have any patterns yet</EmptyState.Title>
+            <EmptyState.Title>{t('patterns_empty')}</EmptyState.Title>
             <EmptyState.Description>
-              Add a new pattern to get started
+              {t('patterns_empty_description')}
             </EmptyState.Description>
           </VStack>
         </EmptyState.Content>
@@ -96,18 +122,18 @@ function PatternsTable() {
       <Table.Root size={{ base: "sm", md: "md" }}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="sm">Icon</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Title</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('icon')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('title')}</Table.ColumnHeader>
             {/* <Table.ColumnHeader w="sm">Description</Table.ColumnHeader> */}
-            <Table.ColumnHeader w="sm">Brand</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Category</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">For Who</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('brand')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('category')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('for_who')}</Table.ColumnHeader>
             {/* <Table.ColumnHeader w="sm">Version</Table.ColumnHeader> */}
             {/* <Table.ColumnHeader w="sm">URL</Table.ColumnHeader> */}
             {/* <Table.ColumnHeader w="sm">Difficulty</Table.ColumnHeader> */}
             {/* <Table.ColumnHeader w="sm">Fabric</Table.ColumnHeader> */}
-            <Table.ColumnHeader w="sm">Min Fabric Amount [cm]</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('min_fabric_amount')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{t('actions')}</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -120,7 +146,7 @@ function PatternsTable() {
                 {pattern.title}
                 {currentUser?.id === pattern.owner_id && (
                   <Badge ml="1" colorScheme="teal">
-                    Yours
+                    {t('my_pattern')}
                   </Badge>
                 )}
               </Table.Cell>
@@ -201,10 +227,20 @@ function PatternsTable() {
 }
 //      //<AddPattern />
 function Patterns() {
+
+  const { t, ready } = useTranslation('pattern');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
+
   return (
     <Container maxW="full">
       <Heading size="lg" pt={12}>
-        Patterns Management
+        {t('patterns_management')}
       </Heading>
 
       <AddPatternAndFiles />

@@ -1,4 +1,4 @@
-import { Badge, Container, Flex, Heading, Table } from "@chakra-ui/react"
+import { Badge, Container, Flex, Heading, Table, Spinner, Center } from "@chakra-ui/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { z } from "zod"
@@ -13,6 +13,8 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination.tsx"
+import { useTranslation } from 'react-i18next';
+import { Suspense } from "react"
 
 const usersSearchSchema = z.object({
   page: z.number().catch(1),
@@ -29,11 +31,28 @@ function getUsersQueryOptions({ page }: { page: number }) {
 }
 
 export const Route = createFileRoute("/_layout/admin")({
-  component: Admin,
+  component: () => (
+    <Suspense fallback={
+      <Center minH="100vh">
+        <Spinner size="xl" />
+      </Center>
+    }>
+      <Admin />
+    </Suspense>
+  ),
   validateSearch: (search) => usersSearchSchema.parse(search),
 })
 
+
 function UsersTable() {
+  const { t: tAdmin, ready } = useTranslation('admin');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const queryClient = useQueryClient()
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
   const navigate = useNavigate({ from: Route.fullPath })
@@ -61,11 +80,11 @@ function UsersTable() {
       <Table.Root size={{ base: "sm", md: "md" }}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="sm">Full name</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{tAdmin('full_name')}</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Email</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Role</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Status</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{tAdmin('role')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{tAdmin('status')}</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">{tAdmin('actions')}</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -75,7 +94,7 @@ function UsersTable() {
                 {user.full_name || "N/A"}
                 {currentUser?.id === user.id && (
                   <Badge ml="1" colorScheme="teal">
-                    You
+                    {tAdmin('you')}
                   </Badge>
                 )}
               </Table.Cell>
@@ -114,10 +133,18 @@ function UsersTable() {
 }
 
 function Admin() {
+  const { t: tAdmin, ready } = useTranslation('admin');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   return (
     <Container maxW="full">
       <Heading size="lg" pt={12}>
-        Users Management
+        {tAdmin('users_management')}
       </Heading>
 
       <AddUser />

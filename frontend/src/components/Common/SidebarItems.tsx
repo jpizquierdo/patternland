@@ -6,12 +6,8 @@ import { GiSewingMachine } from "react-icons/gi";
 import type { IconType } from "react-icons/lib"
 
 import type { UserPublic } from "@/client"
+import { useTranslation } from 'react-i18next';
 
-const items = [
-  { icon: FiHome, title: "Dashboard", path: "/" },
-  { icon: GiSewingMachine, title: "Patterns", path: "/patterns" },
-  { icon: FiSettings, title: "User Settings", path: "/settings" },
-]
 
 interface SidebarItemsProps {
   onClose?: () => void
@@ -24,6 +20,13 @@ interface Item {
 }
 
 const SidebarItems = ({ onClose }: SidebarItemsProps) => {
+  const { t: tAdmin } = useTranslation('admin'); // 👈 tells i18next to use "admin.json"
+  const { t: tPattern } = useTranslation('pattern'); // 👈 tells i18next to use "common.json"
+  const items = [
+    { icon: FiHome, title: "Dashboard", path: "/" },
+    { icon: GiSewingMachine, title: tPattern('patterns'), path: "/patterns" },
+    { icon: FiSettings, title: tAdmin('user_settings'), path: "/settings" },
+  ]
   const queryClient = useQueryClient()
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
 

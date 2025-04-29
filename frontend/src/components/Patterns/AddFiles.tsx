@@ -24,6 +24,7 @@ import {
     DialogTrigger,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
+import { useTranslation } from 'react-i18next';
 
 const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -38,12 +39,13 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
         mode: "onBlur",
         criteriaMode: "all",
     })
-
+    const { t: tPattern } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+    const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
     const mutation = useMutation({
         mutationFn: (data: Body_patterns_upload_files) =>
             PatternsService.uploadFiles({ formData: data }),
         onSuccess: () => {
-            showSuccessToast("Pattern files successfully uploaded.")
+            showSuccessToast(tPattern('add_files_success'))
             reset()
             setIsOpen(false)
             closeMenu?.()
@@ -85,21 +87,21 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
             <DialogTrigger asChild>
                 <Button variant="ghost" value="add-files">
                     <FaPlus fontSize="16px" />
-                    Add Files
+                    {tPattern('add_files')}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader>
-                        <DialogTitle>Upload Files</DialogTitle>
+                        <DialogTitle>{tPattern('upload_files')}</DialogTitle>
                     </DialogHeader>
                     <DialogBody>
-                        <Text mb={4}>Select files to upload for the pattern.</Text>
+                        <Text mb={4}>{tPattern('upload_files_text')}</Text>
                         <VStack gap={4}>
                             <Field
                                 invalid={!!errors.icon}
                                 errorText={errors.icon?.message}
-                                label="Pattern icon"
+                                label={tPattern('pattern_icon')}
                             >
                                 <Input
                                     type="file"
@@ -109,7 +111,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                             <Field
                                 invalid={!!errors.pattern_a0_file}
                                 errorText={errors.pattern_a0_file?.message}
-                                label="Pattern A0 File"
+                                label={tPattern('pattern_a0_file')}
                             >
                                 <Input
                                     type="file"
@@ -119,7 +121,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                             <Field
                                 invalid={!!errors.pattern_a0_sa_file}
                                 errorText={errors.pattern_a0_sa_file?.message}
-                                label="Pattern A0 SA File"
+                                label={tPattern('pattern_a0_sa_file')}
                             >
                                 <Input
                                     type="file"
@@ -129,7 +131,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                             <Field
                                 invalid={!!errors.pattern_a0_sa_projector_file}
                                 errorText={errors.pattern_a0_sa_projector_file?.message}
-                                label="Pattern A0 SA Projector File"
+                                label={tPattern('pattern_a0_sa_projector_file')}
                             >
                                 <Input
                                     type="file"
@@ -139,7 +141,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                             <Field
                                 invalid={!!errors.pattern_a0_projector_file}
                                 errorText={errors.pattern_a0_projector_file?.message}
-                                label="Pattern A0 Projector File"
+                                label={tPattern('pattern_a0_projector_file')}
                             >
                                 <Input
                                     type="file"
@@ -149,7 +151,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                             <Field
                                 invalid={!!errors.pattern_a4_file}
                                 errorText={errors.pattern_a4_file?.message}
-                                label="Pattern A4 File"
+                                label={tPattern('pattern_a4_file')}
                             >
                                 <Input
                                     type="file"
@@ -159,7 +161,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                             <Field
                                 invalid={!!errors.pattern_a4_sa_file}
                                 errorText={errors.pattern_a4_sa_file?.message}
-                                label="Pattern A4 SA File"
+                                label={tPattern('pattern_a4_sa_file')}
                             >
                                 <Input
                                     type="file"
@@ -169,7 +171,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                             <Field
                                 invalid={!!errors.pattern_instructables_file}
                                 errorText={errors.pattern_instructables_file?.message}
-                                label="Pattern Instructables File"
+                                label={tPattern('pattern_instructables_file')}
                             >
                                 <Input
                                     type="file"
@@ -185,7 +187,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                                 colorPalette="gray"
                                 disabled={isSubmitting}
                             >
-                                Cancel
+                                {tCommon('cancel')}
                             </Button>
                         </DialogActionTrigger>
                         <Button
@@ -194,7 +196,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
                             disabled={!isValid}
                             loading={isSubmitting}
                         >
-                            Upload
+                            {tCommon('upload_files')}
                         </Button>
                     </DialogFooter>
                 </form>

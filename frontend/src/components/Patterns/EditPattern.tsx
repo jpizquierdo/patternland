@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
+import { useTranslation } from 'react-i18next';
 
 // Utility type: takes an array and gives you a union of its values
 type ValueOfArray<T extends Readonly<any[]>> = T[number];
@@ -77,12 +78,13 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
       // if more nullable fields, normalize them here too
     },
   })
-
+  const { t: tPattern } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+  const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
   const mutation = useMutation({
     mutationFn: (data: PatternUpdateForm) =>
       PatternsService.updatePattern({ id: pattern.id, requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Pattern updated successfully.")
+      showSuccessToast(tPattern('pattern_edit_success'))
       reset()
       setIsOpen(false)
       closeMenu?.()
@@ -122,29 +124,29 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
       <DialogTrigger asChild>
         <Button variant="ghost">
           <FaExchangeAlt fontSize="16px" />
-          Edit Pattern
+          {tPattern('edit_pattern')}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Edit Pattern</DialogTitle>
+            <DialogTitle>{tPattern('edit_pattern')}</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>Update the pattern details below.</Text>
+            <Text mb={4}>{tPattern('edit_pattern_text')}</Text>
             <VStack gap={4}>
               <Field
                 required
                 invalid={!!errors.title}
                 errorText={errors.title?.message}
-                label="Title"
+                label={tPattern('title')}
               >
                 <Input
                   id="title"
                   {...register("title", {
-                    required: "Title is required.",
+                    required: tPattern('title_required'),
                   })}
-                  placeholder="Title"
+                  placeholder={tPattern('title')}
                   type="text"
                 />
               </Field>
@@ -152,12 +154,12 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
               <Field
                 invalid={!!errors.description}
                 errorText={errors.description?.message}
-                label="Description"
+                label={tPattern('description')}
               >
                 <Input
                   id="description"
                   {...register("description")}
-                  placeholder="Description"
+                  placeholder={tPattern('description')}
                   type="text"
                 />
               </Field>
@@ -171,10 +173,10 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                   <select
                     id="version"
                     {...register("version")}
-                    placeholder="Select a version"
+                    placeholder={tPattern('version_placeholder')}
                   >
                     <option value="" disabled>
-                      Select a version
+                      {tPattern('version_placeholder')}
                     </option>
                     {versionOptions.map((option) => (
                       <option key={option} value={option}>
@@ -187,15 +189,15 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                   required
                   invalid={!!errors.brand}
                   errorText={errors.brand?.message}
-                  label="Brand"
+                  label={tPattern('brand')}
                 >
                   <select
                     id="brand"
                     {...register("brand")}
-                    placeholder="Select a brand"
+                    placeholder={tPattern('brand_placeholder')}
                   >
                     <option value="" disabled>
-                      Select a brand
+                      {tPattern('brand_placeholder')}
                     </option>
                     {brandOptions.map((option) => (
                       <option key={option} value={option}>
@@ -208,15 +210,15 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                   //required
                   invalid={!!errors.category}
                   errorText={errors.category?.message}
-                  label="Category"
+                  label={tPattern('category')}
                 >
                   <select
                     id="category"
                     {...register("category")}
-                    placeholder="Select a category"
+                    placeholder={tPattern('category_placeholder')}
                   >
                     <option value="">
-                      Other
+                      {tPattern('category_null')}
                     </option>
                     {categoryOptions.filter((option): option is Exclude<typeof option, null | undefined> => option !== null && option !== undefined).map((option) => (
                       <option key={option} value={option}>
@@ -229,15 +231,15 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                   required
                   invalid={!!errors.for_who}
                   errorText={errors.for_who?.message}
-                  label="For Who"
+                  label={tPattern('for_who')}
                 >
                   <select
                     id="for_who"
                     {...register("for_who")}
-                    placeholder="For Who"
+                    placeholder={tPattern('for_who')}
                   >
                     <option value="" disabled>
-                      For Who
+                      {tPattern('for_who')}
                     </option>
                     {forWhoOptions.map((option) => (
                       <option key={option} value={option}>
@@ -253,15 +255,15 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                   required
                   invalid={!!errors.difficulty}
                   errorText={errors.difficulty?.message}
-                  label="Difficulty"
+                  label={tPattern('difficulty')}
                 >
                   <select
                     id="difficulty"
                     {...register("difficulty")}
-                    placeholder="Select a difficulty"
+                    placeholder={tPattern('difficulty_placeholder')}
                   >
                     <option value="" disabled>
-                      Select a difficulty
+                      {tPattern('difficulty_placeholder')}
                     </option>
                     {difficultyOptions.map((option) => (
                       <option key={option} value={option}>
@@ -273,37 +275,37 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                 <Field
                   invalid={!!errors.fabric}
                   errorText={errors.fabric?.message}
-                  label="Fabric"
+                  label={tPattern('fabric')}
                 >
                   <Input
                     id="fabric"
                     {...register("fabric")}
-                    placeholder="fabric"
+                    placeholder={tPattern('fabric')}
                     type="text"
-                  />
-                </Field>
-                <Field
-                  invalid={!!errors.fabric_amount}
-                  errorText={errors.fabric_amount?.message}
-                  label="Fabric Amount [m]"
-                >
-                  <Input
-                    id="fabric_amount"
-                    {...register("fabric_amount")}
-                    placeholder="fabric_amount"
-                    type="number"
                   />
                 </Field>
               </HStack>
               <Field
+                invalid={!!errors.fabric_amount}
+                errorText={errors.fabric_amount?.message}
+                label={tPattern('min_fabric_amount')}
+              >
+                <Input
+                  id="fabric_amount"
+                  {...register("fabric_amount")}
+                  placeholder={tPattern('min_fabric_amount')}
+                  type="number"
+                />
+              </Field>
+              <Field
                 invalid={!!errors.pattern_url}
                 errorText={errors.pattern_url?.message}
-                label="Pattern URL"
+                label={tPattern('pattern_url')}
               >
                 <Input
                   id="pattern_url"
                   {...register("pattern_url")}
-                  placeholder="pattern_url"
+                  placeholder={tPattern('pattern_url')}
                   type="url"
                 />
               </Field>
@@ -318,11 +320,11 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                   colorPalette="gray"
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  {tCommon('cancel')}
                 </Button>
               </DialogActionTrigger>
               <Button variant="solid" type="submit" loading={isSubmitting}>
-                Save
+                {tCommon('save')}
               </Button>
             </ButtonGroup>
           </DialogFooter>

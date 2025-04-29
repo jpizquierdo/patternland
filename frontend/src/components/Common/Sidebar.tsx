@@ -1,6 +1,6 @@
-import { Box, Flex, IconButton, Text } from "@chakra-ui/react"
+import { Box, Flex, IconButton, Text, Spinner, Center } from "@chakra-ui/react"
 import { useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { FaBars } from "react-icons/fa"
 import { FiLogOut } from "react-icons/fi"
 
@@ -15,8 +15,27 @@ import {
   DrawerTrigger,
 } from "../ui/drawer"
 import SidebarItems from "./SidebarItems"
+import { useTranslation } from 'react-i18next';
 
-const Sidebar = () => {
+// --- Wrapped in Suspense boundary ---
+const Sidebar = () => (
+  <Suspense fallback={
+    <Center minH="100vh">
+      <Spinner size="lg" />
+    </Center>
+  }>
+    <SidebarContent />
+  </Suspense>
+)
+const SidebarContent = () => {
+  const { t: tCommon, ready } = useTranslation('common');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const queryClient = useQueryClient()
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
   const { logout } = useAuth()
@@ -66,7 +85,7 @@ const Sidebar = () => {
               </Box>
               {currentUser?.email && (
                 <Text fontSize="sm" p={2} truncate maxW="sm">
-                  Logged in as: {currentUser.email}
+                  {tCommon('logged_in_as')}{currentUser.email}
                 </Text>
               )}
             </Flex>

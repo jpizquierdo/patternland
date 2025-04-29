@@ -28,6 +28,7 @@ import {
   DialogTitle,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
+import { useTranslation } from 'react-i18next';
 
 interface EditUserProps {
   user: UserPublic
@@ -54,11 +55,14 @@ const EditUser = ({ user }: EditUserProps) => {
     defaultValues: user,
   })
 
+  const { t: tAdmin } = useTranslation('admin'); // 👈 tells i18next to use "admin.json"
+  const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
+
   const mutation = useMutation({
     mutationFn: (data: UserUpdateForm) =>
       UsersService.updateUser({ userId: user.id, requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("User updated successfully.")
+      showSuccessToast(tAdmin('edit_user_success'))
       reset()
       setIsOpen(false)
     },
@@ -87,16 +91,16 @@ const EditUser = ({ user }: EditUserProps) => {
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm">
           <FaExchangeAlt fontSize="16px" />
-          Edit User
+          {tAdmin('edit_user')}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
+            <DialogTitle>{tAdmin('edit_user')}</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>Update the user details below.</Text>
+            <Text mb={4}>{tAdmin('edit_user_description')}</Text>
             <VStack gap={4}>
               <Field
                 required
@@ -107,7 +111,7 @@ const EditUser = ({ user }: EditUserProps) => {
                 <Input
                   id="email"
                   {...register("email", {
-                    required: "Email is required",
+                    required: tAdmin('email_required'),
                     pattern: emailPattern,
                   })}
                   placeholder="Email"
@@ -118,12 +122,12 @@ const EditUser = ({ user }: EditUserProps) => {
               <Field
                 invalid={!!errors.full_name}
                 errorText={errors.full_name?.message}
-                label="Full Name"
+                label={tAdmin('full_name')}
               >
                 <Input
                   id="name"
                   {...register("full_name")}
-                  placeholder="Full name"
+                  placeholder={tAdmin('full_name')}
                   type="text"
                 />
               </Field>
@@ -131,17 +135,17 @@ const EditUser = ({ user }: EditUserProps) => {
               <Field
                 invalid={!!errors.password}
                 errorText={errors.password?.message}
-                label="Set Password"
+                label={tAdmin('set_password')}
               >
                 <Input
                   id="password"
                   {...register("password", {
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters",
+                      message: tAdmin('password_min_length'),
                     },
                   })}
-                  placeholder="Password"
+                  placeholder={tAdmin('password')}
                   type="password"
                 />
               </Field>
@@ -149,16 +153,16 @@ const EditUser = ({ user }: EditUserProps) => {
               <Field
                 invalid={!!errors.confirm_password}
                 errorText={errors.confirm_password?.message}
-                label="Confirm Password"
+                label={tAdmin('confirm_password')}
               >
                 <Input
                   id="confirm_password"
                   {...register("confirm_password", {
                     validate: (value) =>
                       value === getValues().password ||
-                      "The passwords do not match",
+                      tAdmin('confirm_password_match'),
                   })}
-                  placeholder="Password"
+                  placeholder={tAdmin('password')}
                   type="password"
                 />
               </Field>
@@ -174,7 +178,7 @@ const EditUser = ({ user }: EditUserProps) => {
                       checked={field.value}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is superuser?
+                      {tAdmin('is_superuser')}
                     </Checkbox>
                   </Field>
                 )}
@@ -188,7 +192,7 @@ const EditUser = ({ user }: EditUserProps) => {
                       checked={field.value}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is active?
+                      {tAdmin('is_active')}
                     </Checkbox>
                   </Field>
                 )}
@@ -203,11 +207,11 @@ const EditUser = ({ user }: EditUserProps) => {
                 colorPalette="gray"
                 disabled={isSubmitting}
               >
-                Cancel
+                {tCommon('cancel')}
               </Button>
             </DialogActionTrigger>
             <Button variant="solid" type="submit" loading={isSubmitting}>
-              Save
+              {tCommon('save')}
             </Button>
           </DialogFooter>
           <DialogCloseTrigger />

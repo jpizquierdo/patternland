@@ -1,12 +1,33 @@
-import { Box, Button, Flex, Text } from "@chakra-ui/react"
+import { Box, Button, Flex, Text, Spinner, Center } from "@chakra-ui/react"
 import { Link } from "@tanstack/react-router"
 import { FaUserAstronaut } from "react-icons/fa"
 import { FiLogOut, FiUser } from "react-icons/fi"
 
 import useAuth from "@/hooks/useAuth"
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu"
+import { Suspense } from "react"
+import { useTranslation } from 'react-i18next';
 
-const UserMenu = () => {
+// --- Wrapped in Suspense boundary ---
+const UserMenu = () => (
+  <Suspense fallback={
+    <Center minH="100vh">
+      <Spinner size="lg" />
+    </Center>
+  }>
+    <UserMenuContent />
+  </Suspense>
+)
+
+const UserMenuContent = () => {
+  const { t: tCommon, ready } = useTranslation('common');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const { user, logout } = useAuth()
 
   const handleLogout = async () => {
@@ -35,7 +56,7 @@ const UserMenu = () => {
                 style={{ cursor: "pointer" }}
               >
                 <FiUser fontSize="18px" />
-                <Box flex="1">My Profile</Box>
+                <Box flex="1">{tCommon('my_profile')}</Box>
               </MenuItem>
             </Link>
 

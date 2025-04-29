@@ -1,4 +1,4 @@
-import { Container, Image, Input, Text } from "@chakra-ui/react"
+import { Container, Image, Input, Text, Spinner, Center } from "@chakra-ui/react"
 import {
   Link as RouterLink,
   createFileRoute,
@@ -15,9 +15,19 @@ import { PasswordInput } from "@/components/ui/password-input"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 import Logo from "/assets/images/patternland-logo.svg"
 import { emailPattern, passwordRules } from "../utils"
+import { useTranslation } from 'react-i18next';
+import { Suspense } from "react"
 
 export const Route = createFileRoute("/login")({
-  component: Login,
+  component: () => (
+    <Suspense fallback={
+      <Center minH="100vh">
+        <Spinner size="xl" />
+      </Center>
+    }>
+      <Login />
+    </Suspense>
+  ),
   beforeLoad: async () => {
     if (isLoggedIn()) {
       throw redirect({
@@ -28,6 +38,14 @@ export const Route = createFileRoute("/login")({
 })
 
 function Login() {
+  const { t: tAdmin, ready } = useTranslation('admin');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const { loginMutation, error, resetError } = useAuth()
   const {
     register,
@@ -68,7 +86,7 @@ function Login() {
       >
         <Image
           src={Logo}
-          alt="FastAPI logo"
+          alt="Patternland logo"
           height="auto"
           maxW="2xs"
           alignSelf="center"
@@ -82,7 +100,7 @@ function Login() {
             <Input
               id="username"
               {...register("username", {
-                required: "Username is required",
+                required: tAdmin('username_required'),
                 pattern: emailPattern,
               })}
               placeholder="Email"
@@ -94,19 +112,19 @@ function Login() {
           type="password"
           startElement={<FiLock />}
           {...register("password", passwordRules())}
-          placeholder="Password"
+          placeholder={tAdmin('password')}
           errors={errors}
         />
         <RouterLink to="/recover-password" className="main-link">
-          Forgot Password?
+          {tAdmin('forgot_password')}
         </RouterLink>
         <Button variant="solid" type="submit" loading={isSubmitting} size="md">
-          Log In
+          {tAdmin('log_in')}
         </Button>
         <Text>
-          Don't have an account?{" "}
+          {tAdmin('dont_have_an_account')}{" "}
           <RouterLink to="/signup" className="main-link">
-            Sign Up
+            {tAdmin('sign_up')}
           </RouterLink>
         </Text>
       </Container>

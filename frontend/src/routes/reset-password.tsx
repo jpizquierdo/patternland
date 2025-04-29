@@ -1,4 +1,4 @@
-import { Container, Heading, Text } from "@chakra-ui/react"
+import { Container, Heading, Text, Spinner, Center } from "@chakra-ui/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
@@ -10,13 +10,23 @@ import { PasswordInput } from "@/components/ui/password-input"
 import { isLoggedIn } from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import { confirmPasswordRules, handleError, passwordRules } from "@/utils"
+import { useTranslation } from 'react-i18next';
+import { Suspense } from "react"
 
 interface NewPasswordForm extends NewPassword {
   confirm_password: string
 }
 
 export const Route = createFileRoute("/reset-password")({
-  component: ResetPassword,
+  component: () => (
+    <Suspense fallback={
+      <Center minH="100vh">
+        <Spinner size="xl" />
+      </Center>
+    }>
+      <ResetPassword />
+    </Suspense>
+  ),
   beforeLoad: async () => {
     if (isLoggedIn()) {
       throw redirect({
@@ -27,6 +37,14 @@ export const Route = createFileRoute("/reset-password")({
 })
 
 function ResetPassword() {
+  const { t: tAdmin, ready } = useTranslation('admin');
+  if (!ready) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="lg" />
+      </Center>
+    )
+  }
   const {
     register,
     handleSubmit,
@@ -54,7 +72,7 @@ function ResetPassword() {
   const mutation = useMutation({
     mutationFn: resetPassword,
     onSuccess: () => {
-      showSuccessToast("Password updated successfully.")
+      showSuccessToast(tAdmin('password_update_success'))
       reset()
       navigate({ to: "/login" })
     },
@@ -79,27 +97,27 @@ function ResetPassword() {
       centerContent
     >
       <Heading size="xl" color="ui.main" textAlign="center" mb={2}>
-        Reset Password
+        {tAdmin('reset_password')}
       </Heading>
       <Text textAlign="center">
-        Please enter your new password and confirm it to reset your password.
+        {tAdmin('reset_password_description')}
       </Text>
       <PasswordInput
         startElement={<FiLock />}
         type="new_password"
         errors={errors}
         {...register("new_password", passwordRules())}
-        placeholder="New Password"
+        placeholder={tAdmin('new_password')}
       />
       <PasswordInput
         startElement={<FiLock />}
         type="confirm_password"
         errors={errors}
         {...register("confirm_password", confirmPasswordRules(getValues))}
-        placeholder="Confirm Password"
+        placeholder={tAdmin('confirm_password')}
       />
       <Button variant="solid" type="submit">
-        Reset Password
+        {tAdmin('reset_password')}
       </Button>
     </Container>
   )

@@ -27,6 +27,7 @@ import {
     DialogTrigger,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
+import { useTranslation } from 'react-i18next';
 
 const AddPatternAndFiles = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -47,7 +48,7 @@ const AddPatternAndFiles = () => {
             version: "Digital",
         },
     })
-
+    const { t: tPattern } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
     const mutation = useMutation({
         mutationFn: async (data: ExtendedFormValues) => {
             // Step 1: Create the pattern
@@ -70,7 +71,7 @@ const AddPatternAndFiles = () => {
             return created
         },
         onSuccess: () => {
-            showSuccessToast("Pattern and files uploaded successfully.")
+            showSuccessToast(tPattern('files_upload_success'))
             reset()
             setIsOpen(false)
         },
@@ -108,6 +109,8 @@ const AddPatternAndFiles = () => {
         pattern_instructables_file?: FileList
         icon?: FileList
     }
+    //const { t: tPattern } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+    const { t: tCommon } = useTranslation('common'); // 👈 tells i18next to use "common.json"
     return (
         <DialogRoot
             size={{ base: "xs", md: "md" }}
@@ -118,29 +121,29 @@ const AddPatternAndFiles = () => {
             <DialogTrigger asChild>
                 <Button value="add-pattern" my={4}>
                     <FaPlus fontSize="16px" />
-                    Add Pattern
+                    {tPattern('add_pattern')}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogHeader>
-                        <DialogTitle>Add Pattern</DialogTitle>
+                        <DialogTitle>{tPattern('add_pattern')}</DialogTitle>
                     </DialogHeader>
                     <DialogBody>
-                        <Text mb={4}>Fill in the details to add a new pattern.</Text>
+                        <Text mb={4}>{tPattern('pattern_create_text')}</Text>
                         <VStack gap={4}>
                             <Field
                                 required
                                 invalid={!!errors.title}
                                 errorText={errors.title?.message}
-                                label="Title"
+                                label={tPattern('title')}
                             >
                                 <Input
                                     id="title"
                                     {...register("title", {
-                                        required: "Title is required.",
+                                        required: tPattern('title_required'),
                                     })}
-                                    placeholder="Title"
+                                    placeholder={tPattern('title')}
                                     type="text"
                                 />
                             </Field>
@@ -148,12 +151,12 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.description}
                                 errorText={errors.description?.message}
-                                label="Description"
+                                label={tPattern('description')}
                             >
                                 <Input
                                     id="description"
                                     {...register("description")}
-                                    placeholder="Description"
+                                    placeholder={tPattern('description')}
                                     type="text"
                                 />
                             </Field>
@@ -167,10 +170,10 @@ const AddPatternAndFiles = () => {
                                     <select
                                         id="version"
                                         {...register("version")}
-                                        placeholder="Select a version"
+                                        placeholder={tPattern('version_placeholder')}
                                     >
                                         <option value="" disabled>
-                                            Select a version
+                                            {tPattern('version_placeholder')}
                                         </option>
                                         {versionOptions.map((option) => (
                                             <option key={option} value={option}>
@@ -183,15 +186,15 @@ const AddPatternAndFiles = () => {
                                     required
                                     invalid={!!errors.brand}
                                     errorText={errors.brand?.message}
-                                    label="Brand"
+                                    label={tPattern('brand')}
                                 >
                                     <select
                                         id="brand"
                                         {...register("brand")}
-                                        placeholder="Select a brand"
+                                        placeholder={tPattern('brand_placeholder')}
                                     >
                                         <option value="" disabled>
-                                            Select a brand
+                                            {tPattern('brand_placeholder')}
                                         </option>
                                         {brandOptions.map((option) => (
                                             <option key={option} value={option}>
@@ -204,15 +207,15 @@ const AddPatternAndFiles = () => {
                                     //required
                                     invalid={!!errors.category}
                                     errorText={errors.category?.message}
-                                    label="Category"
+                                    label={tPattern('category')}
                                 >
                                     <select
                                         id="category"
                                         {...register("category")}
-                                        placeholder="Select a category"
+                                        placeholder={tPattern('category_placeholder')}
                                     >
                                         <option value="">
-                                            Other
+                                            {tPattern('category_null')}
                                         </option>
                                         {categoryOptions.filter((option): option is Exclude<typeof option, null | undefined> => option !== null && option !== undefined).map((option) => (
                                             <option key={option} value={option}>
@@ -229,15 +232,15 @@ const AddPatternAndFiles = () => {
                                     required
                                     invalid={!!errors.for_who}
                                     errorText={errors.for_who?.message}
-                                    label="For Who"
+                                    label={tPattern('for_who')}
                                 >
                                     <select
                                         id="for_who"
                                         {...register("for_who")}
-                                        placeholder="For Who"
+                                        placeholder={tPattern('for_who')}
                                     >
                                         <option value="" disabled>
-                                            For Who
+                                            {tPattern('for_who')}
                                         </option>
                                         {forWhoOptions.map((option) => (
                                             <option key={option} value={option}>
@@ -250,15 +253,15 @@ const AddPatternAndFiles = () => {
                                     required
                                     invalid={!!errors.difficulty}
                                     errorText={errors.difficulty?.message}
-                                    label="Difficulty"
+                                    label={tPattern('difficulty')}
                                 >
                                     <select
                                         id="difficulty"
                                         {...register("difficulty")}
-                                        placeholder="Select a difficulty"
+                                        placeholder={tPattern('difficulty_placeholder')}
                                     >
                                         <option value="" disabled>
-                                            Select a difficulty
+                                            {tPattern('difficulty_placeholder')}
                                         </option>
                                         {difficultyOptions.map((option) => (
                                             <option key={option} value={option}>
@@ -270,12 +273,12 @@ const AddPatternAndFiles = () => {
                                 <Field
                                     invalid={!!errors.fabric}
                                     errorText={errors.fabric?.message}
-                                    label="Fabric"
+                                    label={tPattern('fabric')}
                                 >
                                     <Input
                                         id="fabric"
                                         {...register("fabric")}
-                                        placeholder="fabric"
+                                        placeholder={tPattern('fabric')}
                                         type="text"
                                     />
                                 </Field>
@@ -283,32 +286,32 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.fabric_amount}
                                 errorText={errors.fabric_amount?.message}
-                                label="Fabric Amount [m]"
+                                label={tPattern('min_fabric_amount')}
                             >
                                 <Input
                                     id="fabric_amount"
                                     {...register("fabric_amount")}
-                                    placeholder="fabric_amount"
+                                    placeholder={tPattern('min_fabric_amount')}
                                     type="number"
                                 />
                             </Field>
                             <Field
                                 invalid={!!errors.pattern_url}
                                 errorText={errors.pattern_url?.message}
-                                label="Pattern URL"
+                                label={tPattern('pattern_url')}
                             >
                                 <Input
                                     id="pattern_url"
                                     {...register("pattern_url")}
-                                    placeholder="pattern_url"
+                                    placeholder={tPattern('pattern_url')}
                                     type="url"
                                 />
                             </Field>
-                            <Text mb={4}>Select files to upload for the pattern.</Text>
+                            <Text mb={4}>{tPattern('upload_files_text')}</Text>
                             <Field
                                 invalid={!!errors.icon}
                                 errorText={errors.icon?.message}
-                                label="Pattern icon"
+                                label={tPattern('pattern_icon')}
                             >
                                 <Input
                                     type="file"
@@ -318,7 +321,7 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.pattern_a0_file}
                                 errorText={errors.pattern_a0_file?.message}
-                                label="Pattern A0 File"
+                                label={tPattern('pattern_a0_file')}
                             >
                                 <Input
                                     type="file"
@@ -328,7 +331,7 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.pattern_a0_sa_file}
                                 errorText={errors.pattern_a0_sa_file?.message}
-                                label="Pattern A0 SA File"
+                                label={tPattern('pattern_a0_sa_file')}
                             >
                                 <Input
                                     type="file"
@@ -338,7 +341,7 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.pattern_a0_sa_projector_file}
                                 errorText={errors.pattern_a0_sa_projector_file?.message}
-                                label="Pattern A0 SA Projector File"
+                                label={tPattern('pattern_a0_sa_projector_file')}
                             >
                                 <Input
                                     type="file"
@@ -348,7 +351,7 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.pattern_a0_projector_file}
                                 errorText={errors.pattern_a0_projector_file?.message}
-                                label="Pattern A0 Projector File"
+                                label={tPattern('pattern_a0_projector_file')}
                             >
                                 <Input
                                     type="file"
@@ -358,7 +361,7 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.pattern_a4_file}
                                 errorText={errors.pattern_a4_file?.message}
-                                label="Pattern A4 File"
+                                label={tPattern('pattern_a4_file')}
                             >
                                 <Input
                                     type="file"
@@ -368,7 +371,7 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.pattern_a4_sa_file}
                                 errorText={errors.pattern_a4_sa_file?.message}
-                                label="Pattern A4 SA File"
+                                label={tPattern('pattern_a4_sa_file')}
                             >
                                 <Input
                                     type="file"
@@ -378,7 +381,7 @@ const AddPatternAndFiles = () => {
                             <Field
                                 invalid={!!errors.pattern_instructables_file}
                                 errorText={errors.pattern_instructables_file?.message}
-                                label="Pattern Instructables File"
+                                label={tPattern('pattern_instructables_file')}
                             >
                                 <Input
                                     type="file"
@@ -395,7 +398,7 @@ const AddPatternAndFiles = () => {
                                 colorPalette="gray"
                                 disabled={isSubmitting}
                             >
-                                Cancel
+                                {tCommon('cancel')}
                             </Button>
                         </DialogActionTrigger>
                         <Button
@@ -404,7 +407,7 @@ const AddPatternAndFiles = () => {
                             disabled={!isValid}
                             loading={isSubmitting}
                         >
-                            Save
+                            {tCommon('save')}
                         </Button>
                     </DialogFooter>
                 </form>
