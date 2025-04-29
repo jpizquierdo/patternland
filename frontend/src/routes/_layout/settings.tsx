@@ -38,7 +38,7 @@ function UserSettings() {
     { value: "my-profile", title: tCommon('my_profile'), component: UserInformation },
     { value: "password", title: tAdmin('password'), component: ChangePassword },
     { value: "appearance", title: tAdmin('appearance'), component: Appearance },
-    { value: "danger-zone", title: tAdmin('appearance'), component: DeleteAccount },
+    { value: "danger-zone", title: tAdmin('danger_zone'), component: DeleteAccount },
   ]
   const { user: currentUser } = useAuth()
   const finalTabs = currentUser?.is_superuser

@@ -159,15 +159,19 @@ function PatternsTable() {
                 {pattern.description || "N/A"}
               </Table.Cell> */}
               <Table.Cell truncate maxW="sm">
-                {pattern.brand}
+                {pattern.brand === "Other"
+                  ? t('brand_null')
+                  : pattern.brand}
               </Table.Cell>
               <Table.Cell
                 color={!pattern.category ? "gray" : "inherit"}
                 truncate maxW="sm">
-                {pattern.category || "N/A"}
+                {pattern.category
+                  ? t(`categories.${pattern.category}`) // Translate category
+                  : "N/A"}
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
-                {pattern.for_who}
+                {t(`for_who_categories.${pattern.for_who}`)}
               </Table.Cell>
               {/* <Table.Cell truncate maxW="sm">
                 {pattern.version}

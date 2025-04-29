@@ -36,17 +36,19 @@ interface PatternFilesViewProps {
 
 type PatternFilesForm = {}
 
-const FILE_LABELS: Partial<Record<keyof PatternPublic, string>> = {
-    pattern_a0_file_id: "A0",
-    pattern_a0_sa_file_id: "A0 SA",
-    pattern_a0_sa_projector_file_id: "A0 SA Projector",
-    pattern_a0_projector_file_id: "A0 Projector",
-    pattern_a4_file_id: "A4",
-    pattern_a4_sa_file_id: "A4 SA",
-    pattern_instructables_file_id: "Instructables"
-}
 
 const PatternFilesView = ({ pattern, closeMenu }: PatternFilesViewProps) => {
+    const { t } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+
+    const FILE_LABELS: Partial<Record<keyof PatternPublic, string>> = {
+        pattern_a0_file_id: "A0",
+        pattern_a0_sa_file_id: "A0 SA",
+        pattern_a0_sa_projector_file_id: "A0 SA Projector",
+        pattern_a0_projector_file_id: "A0 Projector",
+        pattern_a4_file_id: "A4",
+        pattern_a4_sa_file_id: "A4 SA",
+        pattern_instructables_file_id: t('instructables_file'),
+    }
     const [isOpen, setIsOpen] = useState(false)
     const { showSuccessToast } = useCustomToast()
     const { handleSubmit } = useForm<PatternFilesForm>()
@@ -54,7 +56,7 @@ const PatternFilesView = ({ pattern, closeMenu }: PatternFilesViewProps) => {
     const onSubmit: SubmitHandler<PatternFilesForm> = () => {
         // No-op, form isn't submitting anything
     }
-    const { t } = useTranslation('pattern'); // 👈 tells i18next to use "pattern.json"
+
     const handleDownload = async (filename: string) => {
         try {
             // TODO: investigate why this is not working, downloaded file were corrupted using automatic fetch from axios
