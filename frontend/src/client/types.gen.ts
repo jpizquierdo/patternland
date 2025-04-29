@@ -62,7 +62,7 @@ export type PatternCreate = {
   brand: "Fibre Mood" | "Other" | "Seamwork"
   version: "Paper" | "Digital"
   pattern_url?: string | null
-  for_who: "Baby" | "Kids" | "Men" | "Women" | "Pets"
+  for_who: "Baby" | "Kids" | "Men" | "Women" | "Pets" | "Unisex"
   category?:
     | "Accessories"
     | "Bags"
@@ -97,7 +97,7 @@ export type brand = "Fibre Mood" | "Other" | "Seamwork"
 
 export type version = "Paper" | "Digital"
 
-export type for_who = "Baby" | "Kids" | "Men" | "Women" | "Pets"
+export type for_who = "Baby" | "Kids" | "Men" | "Women" | "Pets" | "Unisex"
 
 export type PatternPublic = {
   title: string
@@ -105,7 +105,7 @@ export type PatternPublic = {
   brand: "Fibre Mood" | "Other" | "Seamwork"
   version: "Paper" | "Digital"
   pattern_url?: string | null
-  for_who: "Baby" | "Kids" | "Men" | "Women" | "Pets"
+  for_who: "Baby" | "Kids" | "Men" | "Women" | "Pets" | "Unisex"
   category?:
     | "Accessories"
     | "Bags"
@@ -157,7 +157,7 @@ export type PatternUpdate = {
   brand?: "Fibre Mood" | "Other" | "Seamwork" | null
   version?: "Paper" | "Digital" | null
   pattern_url?: string | null
-  for_who?: "Baby" | "Kids" | "Men" | "Women" | "Pets" | null
+  for_who?: "Baby" | "Kids" | "Men" | "Women" | "Pets" | "Unisex" | null
   category?:
     | "Accessories"
     | "Bags"
@@ -322,9 +322,17 @@ export type PatternsDownloadFileData = {
 export type PatternsDownloadFileResponse = unknown
 
 export type PatternsReadPatternsData = {
+  brand?: string
+  category?: string
+  difficulty?: number
+  fabric?: string
+  fabricAmount?: number
+  forWho?: string
   limit?: number
   selfPatterns?: boolean
   skip?: number
+  title?: string
+  version?: string
 }
 
 export type PatternsReadPatternsResponse = PatternsPublic

@@ -97,7 +97,7 @@ const AddPatternAndFiles = () => {
     const brandOptions: PatternCreate["brand"][] = ["Fibre Mood", "Other", "Seamwork"]
     const versionOptions: PatternCreate["version"][] = ["Paper", "Digital"]
     const categoryOptions: PatternCreate["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers", null]
-    const forWhoOptions: PatternCreate["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets"]
+    const forWhoOptions: PatternCreate["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets", "Unisex"]
     const difficultyOptions: PatternCreate["difficulty"][] = [1, 2, 3, 4, 5]
     type ExtendedFormValues = PatternCreate & {
         pattern_a0_file?: FileList
@@ -177,7 +177,7 @@ const AddPatternAndFiles = () => {
                                         </option>
                                         {versionOptions.map((option) => (
                                             <option key={option} value={option}>
-                                                {option}
+                                                {tPattern(`version_categories.${option}`)} {/* Translate category */}
                                             </option>
                                         ))}
                                     </select>
@@ -198,7 +198,9 @@ const AddPatternAndFiles = () => {
                                         </option>
                                         {brandOptions.map((option) => (
                                             <option key={option} value={option}>
-                                                {option}
+                                                {option === "Other"
+                                                    ? tPattern('brand_null')
+                                                    : option}
                                             </option>
                                         ))}
                                     </select>
@@ -219,7 +221,7 @@ const AddPatternAndFiles = () => {
                                         </option>
                                         {categoryOptions.filter((option): option is Exclude<typeof option, null | undefined> => option !== null && option !== undefined).map((option) => (
                                             <option key={option} value={option}>
-                                                {option}
+                                                {tPattern(`categories.${option}`)} {/* Translate category */}
                                             </option>
                                         ))}
                                     </select>
@@ -244,7 +246,7 @@ const AddPatternAndFiles = () => {
                                         </option>
                                         {forWhoOptions.map((option) => (
                                             <option key={option} value={option}>
-                                                {option}
+                                                {tPattern(`for_who_categories.${option}`)} {/* Translate category */}
                                             </option>
                                         ))}
                                     </select>

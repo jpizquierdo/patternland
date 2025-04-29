@@ -107,7 +107,7 @@ class PatternBase(SQLModel):
     )
     version: Literal["Paper", "Digital"] = Field(sa_type=String, max_length=255)
     pattern_url: str | None = Field(default=None, max_length=255)
-    for_who: Literal["Baby", "Kids", "Men", "Women", "Pets"] = Field(
+    for_who: Literal["Baby", "Kids", "Men", "Women", "Pets", "Unisex"] = Field(
         max_length=255,
         sa_type=String,
     )
@@ -158,7 +158,7 @@ class PatternUpdate(PatternBase):
     )
     version: Literal["Paper", "Digital"] | None = Field(default=None, max_length=255)
     pattern_url: str | None = Field(default=None, max_length=255)
-    for_who: Literal["Baby", "Kids", "Men", "Women", "Pets"] | None = Field(
+    for_who: Literal["Baby", "Kids", "Men", "Women", "Pets", "Unisex"] | None = Field(
         default=None, max_length=255
     )
     category: (

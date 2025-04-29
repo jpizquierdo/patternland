@@ -338,6 +338,14 @@ export class PatternsService {
    * Read Patterns
    * Retrieve patterns.
    * @param data The data for the request.
+   * @param data.title
+   * @param data.brand
+   * @param data.version
+   * @param data.forWho
+   * @param data.category
+   * @param data.difficulty
+   * @param data.fabric
+   * @param data.fabricAmount
    * @param data.skip
    * @param data.limit
    * @param data.selfPatterns
@@ -351,6 +359,14 @@ export class PatternsService {
       method: "GET",
       url: "/api/v1/patterns/",
       query: {
+        title: data.title,
+        brand: data.brand,
+        version: data.version,
+        for_who: data.forWho,
+        category: data.category,
+        difficulty: data.difficulty,
+        fabric: data.fabric,
+        fabric_amount: data.fabricAmount,
         skip: data.skip,
         limit: data.limit,
         self_patterns: data.selfPatterns,

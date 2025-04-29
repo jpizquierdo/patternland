@@ -35,7 +35,7 @@ type ValueOfArray<T extends Readonly<any[]>> = T[number];
 const brandOptions: PatternPublic["brand"][] = ["Fibre Mood", "Other", "Seamwork"]
 const versionOptions: PatternPublic["version"][] = ["Paper", "Digital"]
 const categoryOptions: PatternPublic["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers", null]
-const forWhoOptions: PatternPublic["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets"]
+const forWhoOptions: PatternPublic["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets", "Unisex"]
 const difficultyOptions: PatternPublic["difficulty"][] = [1, 2, 3, 4, 5]
 interface EditPatternProps {
   pattern: PatternPublic
@@ -180,7 +180,7 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                     </option>
                     {versionOptions.map((option) => (
                       <option key={option} value={option}>
-                        {option}
+                        {tPattern(`version_categories.${option}`)} {/* Translate category */}
                       </option>
                     ))}
                   </select>
@@ -201,7 +201,9 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                     </option>
                     {brandOptions.map((option) => (
                       <option key={option} value={option}>
-                        {option}
+                        {option === "Other"
+                          ? tPattern('brand_null')
+                          : option}
                       </option>
                     ))}
                   </select>
@@ -222,7 +224,7 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                     </option>
                     {categoryOptions.filter((option): option is Exclude<typeof option, null | undefined> => option !== null && option !== undefined).map((option) => (
                       <option key={option} value={option}>
-                        {option}
+                        {tPattern(`categories.${option}`)} {/* Translate category */}
                       </option>
                     ))}
                   </select>
@@ -245,7 +247,7 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                     </option>
                     {forWhoOptions.map((option) => (
                       <option key={option} value={option}>
-                        {option}
+                        {tPattern(`for_who_categories.${option}`)} {/* Translate category */}
                       </option>
                     ))}
                   </select>
