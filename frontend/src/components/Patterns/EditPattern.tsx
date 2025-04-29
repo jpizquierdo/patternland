@@ -227,6 +227,8 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                     ))}
                   </select>
                 </Field>
+              </HStack>
+              <HStack gap={2}>
                 <Field
                   required
                   invalid={!!errors.for_who}
@@ -248,9 +250,6 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
                     ))}
                   </select>
                 </Field>
-
-              </HStack>
-              <HStack gap={2}>
                 <Field
                   required
                   invalid={!!errors.difficulty}
