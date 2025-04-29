@@ -1,8 +1,8 @@
 {
-    "loggedInAs": "Logueado como:",
-    "myProfile": "Mi perfil",
+    "logged_in_as": "Logueado como: ",
+    "my_profile": "Mi perfil",
     "not_found_text": "La página que buscas no fue encontrada.",
-    "goBack": "Regresar",
+    "go_back": "Regresar",
     "cancel": "Cancelar",
     "save": "Guardar",
     "delete": "Eliminar",

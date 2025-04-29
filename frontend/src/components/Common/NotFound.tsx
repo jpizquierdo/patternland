@@ -1,8 +1,20 @@
-import { Button, Center, Flex, Text } from "@chakra-ui/react"
+import { Button, Center, Flex, Text, Spinner } from "@chakra-ui/react"
 import { Link } from "@tanstack/react-router"
 import { useTranslation } from 'react-i18next';
+import { Suspense } from "react"
 
-const NotFound = () => {
+// --- Wrapped in Suspense boundary ---
+const NotFound = () => (
+  <Suspense fallback={
+    <Center minH="100vh">
+      <Spinner size="lg" />
+    </Center>
+  }>
+    <NotFoundContent />
+  </Suspense>
+)
+
+const NotFoundContent = () => {
   const { t } = useTranslation('common'); // 👈 tells i18next to use "common.json"
   return (
     <>
@@ -37,7 +49,7 @@ const NotFound = () => {
           textAlign="center"
           zIndex={1}
         >
-          {t('not_found')}
+          {t('not_found_text')}
         </Text>
         <Center zIndex={1}>
           <Link to="/">
@@ -47,7 +59,7 @@ const NotFound = () => {
               mt={4}
               alignSelf="center"
             >
-              {t('goBack')}
+              {t('go_back')}
             </Button>
           </Link>
         </Center>
