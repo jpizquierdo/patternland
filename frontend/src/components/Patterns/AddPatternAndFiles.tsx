@@ -94,7 +94,7 @@ const AddPatternAndFiles = () => {
         };
         mutation.mutate(processedData);
     }
-    const brandOptions: PatternCreate["brand"][] = ["Fibre Mood", "Other", "Seamwork"]
+    const brandOptions: PatternCreate["brand"][] = ["Fibre Mood", "Other", "Seamwork", "Katia", "Burda", "Patrones"]
     const versionOptions: PatternCreate["version"][] = ["Paper", "Digital"]
     const categoryOptions: PatternCreate["category"][] = ["Accessories", "Bags", "Blazers", "Bodywarmer", "Cardigans", "Coats", "DIY", "Dresses", "Hoodie", "Jackets", "Jumpers", "Jumpsuits", "Overalls", "Overshirt", "Pullovers", "Shirts", "Shorts", "Skirts", "Sweaters", "Swimwear", "T-shirts", "Tops", "Trousers", null]
     const forWhoOptions: PatternCreate["for_who"][] = ["Baby", "Kids", "Men", "Women", "Pets", "Unisex"]
