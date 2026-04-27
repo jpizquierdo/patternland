@@ -15,9 +15,15 @@
         "Kids": "Kids",
         "Men": "Men",
         "Women": "Women",
-        "Pets": "Pets"
+        "Pets": "Pets",
+        "Unisex": "Unisex"
     },
+    "version": "Version",
     "difficulty": "Difficulty",
+    "filters": "Filters",
+    "clear_filters": "Clear",
+    "search_placeholder": "Search by title…",
+    "my_patterns_only": "My patterns only",
     "fabric": "Fabric",
     "actions": "Actions",
     "min_fabric_amount": "Minimum fabric amount [cm]",
