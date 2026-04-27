@@ -7,7 +7,7 @@ import {
   Table,
   VStack,
   Image,
-  Badge, Spinner, Center
+  Badge, Spinner, Center, Text
 } from "@chakra-ui/react"
 import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query"
@@ -150,7 +150,15 @@ function PatternsTable() {
                 <IconImage filename={pattern.icon ?? ""} alt={pattern.title} />
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
-                {pattern.title}
+                <Text
+                  as="span"
+                  cursor="pointer"
+                  color="teal.600"
+                  _hover={{ textDecoration: "underline" }}
+                  onClick={() => navigate({ to: "/patterns/$id", params: { id: pattern.id } })}
+                >
+                  {pattern.title}
+                </Text>
                 {currentUser?.id === pattern.owner_id && (
                   <Badge ml="1" colorScheme="teal">
                     {t('my_pattern')}

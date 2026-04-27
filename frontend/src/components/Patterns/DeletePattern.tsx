@@ -18,7 +18,7 @@ import {
 import useCustomToast from "@/hooks/useCustomToast"
 import { useTranslation } from 'react-i18next';
 
-const DeletePattern = ({ id }: { id: string }) => {
+const DeletePattern = ({ id, onSuccess }: { id: string; onSuccess?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -38,6 +38,7 @@ const DeletePattern = ({ id }: { id: string }) => {
     onSuccess: () => {
       showSuccessToast(tPattern('pattern_delete_success'))
       setIsOpen(false)
+      onSuccess?.()
     },
     onError: () => {
       showErrorToast(tPattern('pattern_delete_error'))

@@ -96,5 +96,8 @@
     "download": "Download",
     "not_available": "Not available",
     "close": "Close",
-    "files_upload_success": "Pattern and files uploaded successfully."
+    "files_upload_success": "Pattern and files uploaded successfully.",
+    "back_to_patterns": "Back to patterns",
+    "pattern_not_found": "Pattern not found.",
+    "open_url": "Open URL"
 }
