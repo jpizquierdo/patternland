@@ -99,7 +99,7 @@ async def upload_files(
                 await delete_minio_item(old_file_id)
 
             # Upload the new file and store its ID
-            file_ids[key] = await upload_to_minio(new_file)
+            file_ids[key] = await upload_to_minio(new_file, resize_as_icon=(key == "icon"))
     pattern.sqlmodel_update(file_ids)
     session.add(pattern)
     session.commit()
