@@ -94,6 +94,7 @@ const EditPattern = ({ pattern, closeMenu }: EditPatternProps) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["patterns"] })
+      queryClient.invalidateQueries({ queryKey: ["pattern"] })
     },
   })
 

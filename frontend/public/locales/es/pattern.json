@@ -96,5 +96,8 @@
     "download": "Descargar",
     "not_available": "No disponible",
     "close": "Cerrar",
-    "files_upload_success": "Archivos y patrón subidos con éxito."
+    "files_upload_success": "Archivos y patrón subidos con éxito.",
+    "back_to_patterns": "Volver a patrones",
+    "pattern_not_found": "Patrón no encontrado.",
+    "open_url": "Abrir URL"
 }

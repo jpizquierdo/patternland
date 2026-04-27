@@ -55,6 +55,7 @@ const AddFiles = ({ id, closeMenu }: { id: string, closeMenu?: () => void }) => 
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ["patterns"] })
+            queryClient.invalidateQueries({ queryKey: ["pattern"] })
         },
     })
 
