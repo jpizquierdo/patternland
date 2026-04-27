@@ -35,7 +35,7 @@ async def pattern_filtering(
     statement: SelectOfScalar[Pattern],
 ) -> SelectOfScalar[Pattern]:
     if title is not None:
-        statement = statement.where(Pattern.title == title)
+        statement = statement.where(Pattern.title.ilike(f"%{title}%"))
     if brand is not None:
         statement = statement.where(Pattern.brand == brand)
     if version is not None:
