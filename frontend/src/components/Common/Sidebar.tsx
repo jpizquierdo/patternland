@@ -2,7 +2,7 @@ import { Box, Flex, IconButton, Text, Spinner, Center } from "@chakra-ui/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useState, Suspense } from "react"
 import { FaBars } from "react-icons/fa"
-import { FiLogOut } from "react-icons/fi"
+import { FiLogOut, FiChevronLeft, FiChevronRight } from "react-icons/fi"
 
 import type { UserPublic } from "@/client"
 import useAuth from "@/hooks/useAuth"
@@ -40,6 +40,7 @@ const SidebarContent = () => {
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
   const { logout } = useAuth()
   const [open, setOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   return (
     <>
@@ -98,15 +99,28 @@ const SidebarContent = () => {
 
       <Box
         display={{ base: "none", md: "flex" }}
+        flexDirection="column"
         position="sticky"
         bg="bg.subtle"
         top={0}
-        minW="xxs"
+        w={isCollapsed ? "16" : "52"}
         h="100vh"
         p={4}
+        transition="width 0.2s ease"
+        overflow="hidden"
       >
+        <Flex justify={isCollapsed ? "center" : "flex-end"} mb={2}>
+          <IconButton
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          >
+            {isCollapsed ? <FiChevronRight /> : <FiChevronLeft />}
+          </IconButton>
+        </Flex>
         <Box w="100%">
-          <SidebarItems />
+          <SidebarItems isCollapsed={isCollapsed} />
         </Box>
       </Box>
     </>
