@@ -1,11 +1,11 @@
 import {
+  Box,
   Container,
   EmptyState,
   Flex,
   Heading,
   Table,
   VStack,
-  // Button,
   Image,
   Badge, Spinner, Center
 } from "@chakra-ui/react"
@@ -14,11 +14,11 @@ import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { FiSearch } from "react-icons/fi"
 import { z } from "zod"
-// import { FaExternalLinkAlt } from "react-icons/fa";
 import { PatternsService, OpenAPI } from "@/client"
 import { getHeaders } from "@/client/core/request"
 import { PatternActionsMenu } from "@/components/Common/PatternActionsMenu"
 import AddPatternAndFiles from "@/components/Patterns/AddPatternAndFiles"
+import { PatternFilters } from "@/components/Patterns/PatternFilters"
 import PendingPatterns from "@/components/Pending/PendingPatterns"
 import {
   PaginationItems,
@@ -34,22 +34,37 @@ import { Suspense } from "react"
 
 const patternsSearchSchema = z.object({
   page: z.number().catch(1),
+  title: z.string().optional(),
+  brand: z.string().optional(),
+  category: z.string().optional(),
+  forWho: z.string().optional(),
+  version: z.string().optional(),
+  difficulty: z.number().optional(),
+  selfPatterns: z.boolean().optional(),
 })
+
+export type PatternsSearch = z.infer<typeof patternsSearchSchema>
 
 const PER_PAGE = 10
 
-function getPatternsQueryOptions({ page }: { page: number }) {
+function getPatternsQueryOptions(search: PatternsSearch) {
   return {
     queryFn: () =>
-      PatternsService.readPatterns({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
-    queryKey: ["patterns", { page }],
+      PatternsService.readPatterns({
+        skip: (search.page - 1) * PER_PAGE,
+        limit: PER_PAGE,
+        title: search.title,
+        brand: search.brand,
+        category: search.category,
+        forWho: search.forWho,
+        version: search.version,
+        difficulty: search.difficulty,
+        selfPatterns: search.selfPatterns,
+      }),
+    queryKey: ["patterns", search],
   }
 }
 
-// export const Route = createFileRoute("/_layout/patterns")({
-//   component: Patterns,
-//   validateSearch: (search) => patternsSearchSchema.parse(search),
-// })
 export const Route = createFileRoute("/_layout/patterns")({
   component: () => (
     <Suspense fallback={
@@ -75,19 +90,18 @@ function PatternsTable() {
     )
   }
   const queryClient = useQueryClient()
-  // Get the current user from the query cache
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
   const navigate = useNavigate({ from: Route.fullPath })
-  const { page } = Route.useSearch()
+  const search = Route.useSearch()
 
   const { data, isLoading, isPlaceholderData } = useQuery({
-    ...getPatternsQueryOptions({ page }),
+    ...getPatternsQueryOptions(search),
     placeholderData: (prevData) => prevData,
   })
 
   const setPage = (page: number) =>
     navigate({
-      search: (prev: { [key: string]: string }) => ({ ...prev, page }),
+      search: (prev: PatternsSearch) => ({ ...prev, page }),
     })
 
   const patterns = data?.data.slice(0, PER_PAGE) ?? []
@@ -96,8 +110,6 @@ function PatternsTable() {
   if (isLoading) {
     return <PendingPatterns />
   }
-
-
 
   if (patterns.length === 0) {
     return (
@@ -124,14 +136,9 @@ function PatternsTable() {
           <Table.Row>
             <Table.ColumnHeader w="sm">{t('icon')}</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">{t('title')}</Table.ColumnHeader>
-            {/* <Table.ColumnHeader w="sm">Description</Table.ColumnHeader> */}
             <Table.ColumnHeader w="sm">{t('brand')}</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">{t('category')}</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">{t('for_who')}</Table.ColumnHeader>
-            {/* <Table.ColumnHeader w="sm">Version</Table.ColumnHeader> */}
-            {/* <Table.ColumnHeader w="sm">URL</Table.ColumnHeader> */}
-            {/* <Table.ColumnHeader w="sm">Difficulty</Table.ColumnHeader> */}
-            {/* <Table.ColumnHeader w="sm">Fabric</Table.ColumnHeader> */}
             <Table.ColumnHeader w="sm">{t('min_fabric_amount')}</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">{t('actions')}</Table.ColumnHeader>
           </Table.Row>
@@ -150,14 +157,6 @@ function PatternsTable() {
                   </Badge>
                 )}
               </Table.Cell>
-              {/* <Table.Cell
-                color={!pattern.description ? "gray" : "inherit"}
-                truncate
-                maxW="sm"
-                whiteSpace="normal" // Allow text to wrap
-              >
-                {pattern.description || "N/A"}
-              </Table.Cell> */}
               <Table.Cell truncate maxW="sm">
                 {pattern.brand === "Other"
                   ? t('brand_null')
@@ -167,40 +166,12 @@ function PatternsTable() {
                 color={!pattern.category ? "gray" : "inherit"}
                 truncate maxW="sm">
                 {pattern.category
-                  ? t(`categories.${pattern.category}`) // Translate category
+                  ? t(`categories.${pattern.category}`)
                   : "N/A"}
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
                 {t(`for_who_categories.${pattern.for_who}`)}
               </Table.Cell>
-              {/* <Table.Cell truncate maxW="sm">
-                {pattern.version}
-              </Table.Cell>
-              <Table.Cell
-                color={!pattern.pattern_url ? "gray" : "inherit"}
-                truncate maxW="sm">
-                {pattern.pattern_url ? (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => pattern.pattern_url && window.open(pattern.pattern_url, "_blank")}
-                  >
-                    <FaExternalLinkAlt />
-                  </Button>
-                ) : (
-                  "N/A"
-                )}
-              </Table.Cell>
-              <Table.Cell
-                color={!pattern.difficulty ? "gray" : "inherit"}
-                truncate maxW="sm">
-                {pattern.difficulty || "N/A"}
-              </Table.Cell>
-              <Table.Cell
-                color={!pattern.fabric ? "gray" : "inherit"}
-                truncate maxW="sm">
-                {pattern.fabric || "N/A"}
-              </Table.Cell> */}
               <Table.Cell
                 color={!pattern.fabric_amount ? "gray" : "inherit"}
                 truncate maxW="sm">
@@ -229,10 +200,18 @@ function PatternsTable() {
     </>
   )
 }
-//      //<AddPattern />
-function Patterns() {
 
+function Patterns() {
   const { t, ready } = useTranslation('pattern');
+  const navigate = useNavigate({ from: Route.fullPath })
+  const search = Route.useSearch()
+
+  const handleFilterUpdate = (updates: Partial<PatternsSearch>) => {
+    navigate({
+      search: (prev: PatternsSearch) => ({ ...prev, ...updates, page: 1 }),
+    })
+  }
+
   if (!ready) {
     return (
       <Center minH="100vh">
@@ -243,15 +222,22 @@ function Patterns() {
 
   return (
     <Container maxW="full">
-      <Heading size="lg" pt={12}>
-        {t('patterns_management')}
-      </Heading>
-
-      <AddPatternAndFiles />
-      <PatternsTable />
+      <Flex justify="space-between" align="center" pt={12} mb={6}>
+        <Heading size="lg">
+          {t('patterns_management')}
+        </Heading>
+        <AddPatternAndFiles />
+      </Flex>
+      <Flex gap={6} align="flex-start">
+        <PatternFilters search={search} onUpdate={handleFilterUpdate} />
+        <Box flex="1" minW={0}>
+          <PatternsTable />
+        </Box>
+      </Flex>
     </Container>
   )
 }
+
 const IconImage = ({ filename, alt }: { filename: string; alt: string }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -286,7 +272,7 @@ const IconImage = ({ filename, alt }: { filename: string; alt: string }) => {
 
   return (
     <Image
-      src={imageUrl || placeholderImage} // fallback to placeholder if image is not loaded
+      src={imageUrl || placeholderImage}
       alt={alt}
       boxSize="90px"
       objectFit="scale-down"

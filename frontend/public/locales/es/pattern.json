@@ -18,7 +18,12 @@
         "Pets": "Mascotas",
         "Unisex": "Unisex"
     },
+    "version": "Versión",
     "difficulty": "Dificultad",
+    "filters": "Filtros",
+    "clear_filters": "Limpiar",
+    "search_placeholder": "Buscar por título…",
+    "my_patterns_only": "Solo mis patrones",
     "fabric": "Tela",
     "actions": "Acciones",
     "min_fabric_amount": "Cantidad mínima de tela [cm]",
